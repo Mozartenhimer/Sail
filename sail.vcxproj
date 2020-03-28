@@ -115,6 +115,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="dbg.h" />
+    <ClInclude Include="geometry.h" />
+    <ClInclude Include="globals.h" />
+    <ClInclude Include="nanosvg.h" />
+    <ClInclude Include="olcPixelGameEngine.h" />
+    <ClInclude Include="pencil.h" />
+    <ClInclude Include="vectorExtendedPGE.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="geometry.cpp" />
+    <ClCompile Include="nanosvg_implementation.cpp" />
+    <ClCompile Include="pencil.cpp" />
+    <ClCompile Include="sail.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
