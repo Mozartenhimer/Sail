@@ -1,0 +1,6 @@
+[submodule "dep/svg"]
+	path = dep/svg
+	url = https://github.com/svgpp/svgpp.git
+[submodule "dep/nanosvg"]
+	path = dep/nanosvg
+	url = https://github.com/memononen/nanosvg.git

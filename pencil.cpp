@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "pencil.h"
 olc::VxOLCPGE * Pencil::host;
 std::vector<Arrow> Pencil::arrows;

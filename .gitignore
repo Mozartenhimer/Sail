@@ -1,0 +1,8 @@
+Release/
+Debug/
+.vs
+.swp
+*.pdf
+Resources/Lander.png
+Resources/Lander.xcf
+Resources/pad.svg

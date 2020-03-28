@@ -1,6 +1,8 @@
+#include "pch.h"
+
 #include "Geometry.h"
-#include "nanosvg.h"
-#include "dbg.h"
+
+
 using namespace olc;
 // Current Intersection compreh
 // Cicle <> Line

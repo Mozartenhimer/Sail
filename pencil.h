@@ -1,7 +1,7 @@
 #pragma once
 #include "vectorExtendedPGE.hpp"
 #include <vector>
-//#include "physics.h"
+#include "physics.h"
 #include "geometry.h"
 struct Arrow {
 	olc::vf2d tailLocation;
@@ -50,21 +50,21 @@ public:
 		if (S.type == S.CLOSED && S.points.size() > 2) {// draw last line
 			Line L = { S.points.at(0),S.points[S.points.size() - 1] };
 			host->DrawLine(host->toScreen(L.p2()), host->toScreen(L.p1()), Color);
-		};
+		}; 
 	}
 
-	//static inline void Draw(RigidBody & B, olc::Pixel Color = 0)
-	//{
-	//	for (auto & C : B.circles_w) {
-	//		Draw(C);
-	//	}
-	//	for (auto & S : B.curves_w) {
-	//		Draw(S);
-	//	}
-	//	for (auto & L : B.lines_w) {
-	//		Draw(L);
-	//	}
-	//}
+	static inline void Draw(RigidBody & B, olc::Pixel Color = 0)
+	{
+		for (auto & C : B.circles_w) {
+			Draw(C);
+		}
+		for (auto & S : B.curves_w) {
+			Draw(S);
+		}
+		for (auto & L : B.lines_w) {
+			Draw(L);
+		}
+	}
 	static void AddArrow(olc::vf2d tailLocation, olc::vf2d vector, float scale = 1.0f, olc::Pixel color = olc::Pixel(255, 150, 150));
 	static inline void DrawNow() {
 		for (auto & A : arrows) {
