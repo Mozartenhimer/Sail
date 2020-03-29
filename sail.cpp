@@ -24,6 +24,9 @@ Game-if-fication
 	-Chill?
 
 Wake effects
+Let peole know
+	_ Friends
+	_- Friends/Family with sailboats.
 */
 
 
@@ -60,7 +63,8 @@ int rndInt(int min, int max)
 // end stolen Javid code.
 olc::vf2d wind(olc::vf2d position) // Time implied
 {
-	return { 3.0f,3.0f };
+	// Return the velocity vector of the wind.
+	return { -3.0f,0.0f };
 }
 struct Camera {
 	// It's actually a orhogonal 2d sping mass damper
@@ -118,7 +122,7 @@ private:
 	double previousFrameTime = -1.0; //!< Previous realTime that the frame was rendered. See float frameDelay.
 	double realTime = 0.0; //!< Real Time Clock;
 	double missionElapsedTime = 0.0; //!< Game time
-	bool simRunning = false; //!< Basically game pause.
+	bool simRunning = true; //!< Basically game pause.
 	float throttleRate = 1.0f / 5.0f; // 1 over seconds from 0 to full throttle;
 
 public:
@@ -133,8 +137,8 @@ public:
 	void ResetGameState() {
 		missionElapsedTime = 0;
 
-		ship.body.pos = olc::vf2d(0, -6.10f);
-		ship.body.vel = olc::vf2d(0, 10.0f);
+		ship.body.pos = olc::vf2d(0.0f, 0.0f);
+		ship.body.vel = olc::vf2d(0.0f, 0.0f);
 		ship.body.rot = 0.0f;
 		ship.body.rotDot = 0.0f;
 		cam.anchorPos = cam.pos = ship.body.pos;
@@ -252,17 +256,20 @@ public:
 		if (GetKey(Key::TAB).bPressed) simRunning = !simRunning;
 		if (GetKey(Key::ENTER).bPressed)  ship.body.setFixed(!ship.body.isFixed());
 		if (GetKey(Key::R).bPressed)  ResetGameState();
+		
 		//----- Ship Controls
 		
 		// Rudder
 		float rudderRate = 5.0f;
-		if (GetKey(olc::Key::A).bHeld) { ship.setRudder(ship.getRudder() - rudderRate * fElapsedTime);}
-		if (GetKey(olc::Key::D).bHeld) { ship.setRudder(ship.getRudder() + rudderRate * fElapsedTime);}
-		
+		if (GetKey(olc::Key::A).bHeld) { ship.setRudder(ship.getRudder() - rudderRate * frameTimeStep);}
+		if (GetKey(olc::Key::D).bHeld) { ship.setRudder(ship.getRudder() + rudderRate * frameTimeStep);}
+		float turnRate = 2.0f;
+		if (GetKey(olc::Key::Q).bHeld) { ship.body.rot += turnRate * frameTimeStep; }
+		if (GetKey(olc::Key::E).bHeld) { ship.body.rot -= turnRate * frameTimeStep; }
 		// Sail
 		float sailRate = 1.0f;
-		if (GetKey(olc::Key::W).bHeld) { ship.setSail(ship.getSailSlackAngle() + sailRate * fElapsedTime); }
-		if (GetKey(olc::Key::S).bHeld) { ship.setSail(ship.getSailSlackAngle() - sailRate * fElapsedTime); }
+		if (GetKey(olc::Key::W).bHeld) { ship.setSail(ship.getSailSlackAngle() + sailRate * frameTimeStep); }
+		if (GetKey(olc::Key::S).bHeld) { ship.setSail(ship.getSailSlackAngle() - sailRate * frameTimeStep); }
 
 
 		//----- Camera Controls
@@ -281,6 +288,9 @@ public:
 			nominalScreenHeight *= (1.0f - fElapsedTime * zoomRate);
 			setScreenHeightMeters(nominalScreenHeight);
 		}
+
+
+		// Determine whether the sim should continue this frame.
 		bool simThisFrame = simRunning;
 		// Allow space to pause simulation, and do one frame at a time
 		if (simRunning && GetKey(Key::SPACE).bPressed) {
@@ -291,10 +301,11 @@ public:
 		}
 
 		if (simThisFrame) {
-			float dt = frameTimeStep;
-			if (GetKey(Key::CTRL).bHeld) dt = -dt;
-			
 			Pencil::clearDrawingQueue();
+			float dt = frameTimeStep;
+			if (GetKey(Key::CTRL).bHeld) dt = -dt; // Run backwards
+			// Camera crap
+
 			olc::vr2d displacement = ship.body.vel*0.1f;
 			Real frameBorder = (Real)2;
 			olc::vr2d maxMovement = { -(screenDims.x / 2 - frameBorder),(screenDims.y / 2 - frameBorder) };
@@ -302,7 +313,7 @@ public:
 			olc::vf2d camTarget = ship.body.pos + displacement;
 			cam.updateState(camTarget, ship.body.vel, dt);
 			cameraPos = cam.pos;
-
+			ship.applyEnviromentForces(wind(ship.body.pos));
 			ship.updateState(dt);
 
 			missionElapsedTime += dt;
@@ -331,9 +342,12 @@ public:
 		// Actual
 		ship.Draw();
 
-		// Draw Centroids
+		// Draw Centroidsqe
 		//hud.Draw();
-		DrawDebugLine("Sail Max Angle:" + std::to_string(ship.sailSlackAngle* 180 / M_PI));
+		DrawDebugLine("Sail Slack Angle:" + std::to_string(ship.sailSlackAngle* 180 / M_PI));
+		DrawDebugLine("Sail     Angle:" + std::to_string(ship.sailAngle * 180 / M_PI));
+		DrawDebugLine("Heading       :" + std::to_string(ship.getHeading() * 180 / M_PI));
+		DrawDebugLine("Wind          :" + std::to_string(angle(-wind(ship.body.pos))* 180 / M_PI));
 		Pencil::DrawNow();
 		
 		return true;

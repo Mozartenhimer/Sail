@@ -5,13 +5,25 @@
 #include "globals.h"
 class Ship {
 public:
-	float sailSlackAngle = 0.0f;
-	float sailMaxAngle = (float)M_PI / 2.0f;
+	float sailSlackAngle = (float)M_PI / 2.0f;;
+	float sailLimitAngle = (float)M_PI / 2.0f;
 	float sailAngle = 0.0;
 	
-	inline void setSail(float angle) { if (abs(angle) <= sailMaxAngle) sailSlackAngle = angle; };
+	inline void setSail(float angle)
+	{ if (angle < sailLimitAngle)
+		sailSlackAngle = angle; 
+	else angle = sailLimitAngle;
+	if (angle < 0)
+		sailSlackAngle = 0;
+	};
 	inline float getSailSlackAngle() { return sailSlackAngle; };
-	
+
+public:
+	inline float getHeading() {
+		float heading = body.rot;
+		heading = fmod(heading, M_PI*2);
+		return heading;
+	};
 	float rudderAngle = 0.0f;
 	float maxRudder = (float)M_PI / 2.0f;
 	inline void setRudder(float angle) { if (abs(angle) <= maxRudder) rudderAngle = angle; };

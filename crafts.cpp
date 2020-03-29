@@ -10,9 +10,9 @@ using namespace olc;
 void Ship::init() {
 	body = ConstructBody();
 	sail = ConstructSail();
-	sailPivot = {0.0f,0.5f};
+	sailPivot = { 0.5f,0.0f};
 	rudder = ConstructRudder();
-	rudderPivot = { 0.0f,-1.0f };
+	rudderPivot = { -1.0f ,0.0f};
 };
 
 Ship::Ship() {
@@ -53,22 +53,35 @@ void Ship::Draw() {
 
 
 void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
+	olc::vf2d appearantWind = body.vel - wind;
 	
+	float windAngle = angle(appearantWind);
+	
+	sailAngle = windAngle-getHeading();	
+
+	// clamp sail to controls
+	if (sailAngle > sailSlackAngle)
+	{
+		sailAngle = sailSlackAngle;
+	}
+	if (sailAngle < -sailSlackAngle) {
+		sailAngle = -sailSlackAngle;
+	}
 }
 RigidBody Ship::ConstructBody()
 {
 	RigidBody B;
 	// Front
-	Line tempLeft = { { 0.0f,1.0f },{ 0.5f,0.0f } };
-	Line tempRight = { { 0.0f,1.0f },{ -0.5f,0.0f } };
+	Line tempUp = { { 1.0f,0.0f },{ 0.0f,0.5f } };
+	Line tempLow = { { 1.0f ,0.0f},{ 0.0f,-0.5f } };
 	
-	B.addLine(tempLeft);
-	B.addLine(tempRight);
+	B.addLine(tempUp);
+	B.addLine(tempLow);
 	// Mid
-	tempLeft = {  { 0.5f,0.0f },{ 0.5f,-1.0f } };
-	tempRight = { { -0.5f,0.0f },{ -0.5f,-1.0f } };
-	B.addLine(tempLeft);
-	B.addLine(tempRight);
+	tempUp = { { 0.0f,0.5f },{ -1.0f ,0.5f } };
+	tempLow = { { 0.0f,-0.5f },{ -1.0f,-0.5f } };
+	B.addLine(tempUp);
+	B.addLine(tempLow);
 	//Circle Capsule;
 	//Capsule.radius = 1.0f;
 	//B.addCircle(Capsule);
@@ -81,8 +94,8 @@ SegmentedCurve Ship::ConstructRudder()
 {
 	SegmentedCurve B;
 	// In relative to rudder pivot points.
-	B.points.push_back({ 0.0f,0.05f }); 
-	B.points.push_back({ 0.0f,-0.2f });
+	B.points.push_back({ 0.05f ,0.0f});
+	B.points.push_back({ -0.2f, 0.0f});
 
 	return B;
 };
@@ -91,7 +104,7 @@ SegmentedCurve Ship::ConstructSail()
 {
 	SegmentedCurve B;
 	B.points.push_back({ 0.0f,0.0f });
-	B.points.push_back({ 0.0f,-0.8f });
+	B.points.push_back({ -0.8f, 0.0f});
 	return B;
 
 }

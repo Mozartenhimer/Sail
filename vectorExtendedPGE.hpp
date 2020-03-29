@@ -54,6 +54,8 @@ namespace olc {
 	typedef v2d_generic<Real> vr2d;
 	inline olc::vf2d MirrorX(olc::vf2d V){return olc::vf2d(-V.x, V.y);}
 	inline olc::vf2d MirrorY(olc::vf2d V){return olc::vf2d(V.x, -V.y);}
+
+	inline float angle(const olc::vf2d & V) { return atan2(V.y, V.x); }
 	inline olc::Pixel clampedPixel(int R, int G, int B, int alpha = 255) {
 		R = std::min(R, 255);
 		G = std::min(G, 255);
