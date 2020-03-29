@@ -7,18 +7,24 @@
 #include "crafts.h"
 #include "physics.h"
 #include "pencil.h"
+/*
+ TODO:
 
-// TODO: PHYSCIS: Friction. 
-// TODO: Sort out the moment issue. 
-// TODO:  PLUMES, plume impingment
-// TODO: Add a Polygon class with diagonasl (in the segmented curve too).
-// TODO: HUD
-// TODO: debug mode
-// TODO: Game reset function
-// WANT TODOS:
-// Closed loop autopilot
-// -- Sprung Legs
+ Wind field shown in background
+Sail, rudder and keel forces
+Sail & rudder rendering
+Sound effects
+	- Wind
+	-Water
+	-
+Demonstrate physics working
+Game-if-fication
+	-Race?
+	-Item Collection?
+	-Chill?
 
+Wake effects
+*/
 
 
 using namespace olc;
@@ -247,8 +253,9 @@ public:
 		
 		// Rudder
 		float rudderRate = 5.0f;
-		if (GetKey(olc::Key::A).bHeld) { ship.setRudder(ship.getRudder() - rudderRate * fElapsedTime); }
+		if (GetKey(olc::Key::A).bHeld) { ship.setRudder(ship.getRudder() - rudderRate * fElapsedTime);}
 		if (GetKey(olc::Key::D).bHeld) { ship.setRudder(ship.getRudder() + rudderRate * fElapsedTime);}
+		
 		// Sail
 		float sailRate = 1.0f;
 		if (GetKey(olc::Key::W).bHeld) { ship.setSail(ship.getSailSlackAngle() + sailRate * fElapsedTime); }
@@ -319,7 +326,7 @@ public:
 		ship.Draw();
 
 		// Draw Centroids
-		hud.Draw();
+		//hud.Draw();
 		DrawDebugLine("Sail Max Angle:" + std::to_string(ship.sailSlackAngle* 180 / M_PI));
 		Pencil::DrawNow();
 		

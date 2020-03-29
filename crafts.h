@@ -8,6 +8,7 @@ public:
 	float sailSlackAngle = 0.0f;
 	float sailMaxAngle = (float)M_PI / 2.0f;
 	float sailAngle = 0.0;
+	
 	inline void setSail(float angle) { if (abs(angle) <= sailMaxAngle) sailSlackAngle = angle; };
 	inline float getSailSlackAngle() { return sailSlackAngle; };
 	
@@ -15,8 +16,14 @@ public:
 	float maxRudder = (float)M_PI / 2.0f;
 	inline void setRudder(float angle) { if (abs(angle) <= maxRudder) rudderAngle = angle; };
 	inline float getRudder() { return rudderAngle; };
+	
 	RigidBody body;
-
+	olc::vf2d rudderPivot;
+	SegmentedCurve rudder;
+	SegmentedCurve rudder_w;
+	olc::vf2d sailPivot;
+	SegmentedCurve sail;
+	SegmentedCurve sail_w;
 	olc::VxOLCPGE * host;
 
 	Ship();
@@ -32,4 +39,6 @@ public:
 
 
 	static RigidBody ConstructBody();
+	SegmentedCurve ConstructRudder();
+	SegmentedCurve ConstructSail();
 };
