@@ -32,7 +32,7 @@ public:
 		if (Color == 0) {
 			Color = C.color;
 		}
-		host->DrawCircle(host->toScreen(C.pos), host->toScreen(C.radius), Color);
+		host->DrawCircle(host->toScreen(C.pos), (int)host->toScreen(C.radius), Color);
 	}
 	static inline void Draw(SegmentedCurve & S, olc::Pixel Color = 0)
 	{

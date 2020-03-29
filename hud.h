@@ -18,7 +18,8 @@ public:
 			auto extract = [&](uint8_t packed) {
 				uint8_t Y = packed & ~0xF0;
 				uint8_t X = packed >> 4;
-				olc::vi2d characterLocation = location + olc::vi2d(width + i * width*scale, 0);
+				olc::vi2d characterLocation = location 
+					+ olc::vi2d((int)(width + (float)i * (float)width*scale), 0);
 				olc::vi2d point = (olc::vi2d)(olc::vf2d((float)X, -(float)Y)*scale);
 				return point + characterLocation;
 			};

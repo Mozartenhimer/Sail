@@ -44,7 +44,6 @@ void Ship::Draw() {
 	}
 	Pencil::Draw(rudder_w);
 	sail_w = sail;
-	sailAngle = sailSlackAngle;
 	for (auto & point : sail_w.points)
 	{
 		point = body2world * (Mat2d(sailAngle)*(point)+sailPivot) + body.pos;
@@ -53,7 +52,9 @@ void Ship::Draw() {
 };
 
 
+void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 
+}
 RigidBody Ship::ConstructBody()
 {
 	RigidBody B;

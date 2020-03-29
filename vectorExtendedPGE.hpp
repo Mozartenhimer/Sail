@@ -198,7 +198,7 @@ namespace olc {
 	{
 		bool status = OnEveryFrame(fElapsedTime);
 		for (size_t i = 0; i < dbgStrings.size(); i++) {
-			DrawString(1, 1 + 10 * i, dbgStrings[i],WHITE);
+			DrawString(1, 1 + 10 * (int32_t)i, dbgStrings[i],WHITE);
 		}
 		nFramesRendered++;
 		return status; 

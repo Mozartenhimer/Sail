@@ -58,7 +58,10 @@ int rndInt(int min, int max)
 	return (rnd() % (max - min)) + min;
 }
 // end stolen Javid code.
-
+olc::vf2d wind(olc::vf2d position) // Time implied
+{
+	return { 3.0f,3.0f };
+}
 struct Camera {
 	// It's actually a orhogonal 2d sping mass damper
 	float omega_nom = (float)M_PI*20.0f;
@@ -130,8 +133,8 @@ public:
 	void ResetGameState() {
 		missionElapsedTime = 0;
 
-		ship.body.pos = olc::vf2d(0, -6.10);
-		ship.body.vel = olc::vf2d(0, 10);
+		ship.body.pos = olc::vf2d(0, -6.10f);
+		ship.body.vel = olc::vf2d(0, 10.0f);
 		ship.body.rot = 0.0f;
 		ship.body.rotDot = 0.0f;
 		cam.anchorPos = cam.pos = ship.body.pos;
@@ -165,7 +168,7 @@ public:
 					//int brightness = rndInt(50,200);
 					float intensity = rndFloat(0.001f, 2.0f);
 					// modulate brightness based on scale.
-					int brightness = fmin(255.0f,intensity * pow(getPixelsPerMeter(), 1.5f));
+					int brightness = (int)fmin(255.0f,intensity * pow(getPixelsPerMeter(), 1.5f));
 					float x = rndFloat(0.0f, blockSize);
 					float y = rndFloat(0.0f, blockSize);
 					olc::vf2d starPos( X + x,Y - y );
@@ -271,11 +274,11 @@ public:
 		//Zoom 													
 		float zoomRate = 2.0f;
 		if (GetKey(olc::Key::K1).bHeld) {
-			nominalScreenHeight *= (1.0 + fElapsedTime * zoomRate);
+			nominalScreenHeight *= (1.0f + fElapsedTime * zoomRate);
 			setScreenHeightMeters(nominalScreenHeight);
 		}
 		if (GetKey(olc::Key::K2).bHeld) { 
-			nominalScreenHeight *= (1.0 - fElapsedTime * zoomRate);
+			nominalScreenHeight *= (1.0f - fElapsedTime * zoomRate);
 			setScreenHeightMeters(nominalScreenHeight);
 		}
 

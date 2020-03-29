@@ -38,6 +38,8 @@ public:
 	
 
 
+	void applyEnviromentForces(olc::vf2d wind, olc::vf2d current = { 0,0 });
+
 	static RigidBody ConstructBody();
 	SegmentedCurve ConstructRudder();
 	SegmentedCurve ConstructSail();

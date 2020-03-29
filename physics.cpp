@@ -154,7 +154,7 @@ int Pricipia::PropgateState(Real timeStep)
 	// Subdivide timesteps if needed
 	if (dt > minTimeStep)
 	{
-		n = ceil(timeStep / minTimeStep);
+		n = (int)ceil(timeStep / minTimeStep);
 		dt = timeStep / ((Real)n);
 	}
 	
@@ -186,7 +186,7 @@ int Pricipia::PropgateState(Real timeStep)
 				B->collidesWith(*check, B->frameContacts);
 			}
 		}
-		collisions = frameContacts.size();
+		collisions = (int)frameContacts.size();
 		// Resolve with contacts
 		for (auto & B : bodies) {
 			for(auto & C : B->frameContacts){
@@ -267,7 +267,7 @@ Enviroment Enviroment::LoadFromSVG(std::string filename)
 		for (auto & P : S.points) {
 			Centroid += P;
 		}
-		Centroid /= S.points.size();
+		Centroid /= (float)S.points.size();
 		if(false){
 			//Smart Centroid that doesn't seem to work
 			Real Area = (Real)0;
