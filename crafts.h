@@ -5,9 +5,9 @@
 #include "globals.h"
 class Ship {
 public:
-	float sailSlackAngle = (float)M_PI / 2.0f;;
+	float sailSlackAngle = 0.0f;;
 	float sailLimitAngle = (float)M_PI / 2.0f;
-	float sailAngle = 0.0;
+	float sailAngleFromCenterline = 0.0;
 	
 	inline void setSail(float angle)
 	{ if (angle < sailLimitAngle)

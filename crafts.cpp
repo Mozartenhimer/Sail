@@ -46,7 +46,7 @@ void Ship::Draw() {
 	sail_w = sail;
 	for (auto & point : sail_w.points)
 	{
-		point = body2world * (Mat2d(sailAngle)*(point)+sailPivot) + body.pos;
+		point = body2world * (Mat2d(sailAngleFromCenterline)*(point)+sailPivot) + body.pos;
 	}
 	Pencil::Draw(sail_w);
 };
@@ -57,16 +57,24 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 	
 	float windAngle = angle(appearantWind);
 	
-	sailAngle = windAngle-getHeading();	
+	sailAngleFromCenterline = windAngle-getHeading();	
+
+
 
 	// clamp sail to controls
-	if (sailAngle > sailSlackAngle)
+	if (sailAngleFromCenterline > sailSlackAngle)
 	{
-		sailAngle = sailSlackAngle;
+		sailAngleFromCenterline = sailSlackAngle;
 	}
-	if (sailAngle < -sailSlackAngle) {
-		sailAngle = -sailSlackAngle;
+	if (sailAngleFromCenterline < -sailSlackAngle) {
+		sailAngleFromCenterline = -sailSlackAngle;
 	}
+	float sailAngleWorld = getHeading() + sailAngleFromCenterline;
+	float aoa = sailAngleWorld - windAngle;
+	dbg(aoa); dbg(sailAngleFromCenterline);
+	olc::vf2d normalForce = Mat2d(sailAngleFromCenterline+getHeading())*olc::vf2d(.0f, 1.0f) *aoa;
+	Pencil::AddArrow(body.pos, normalForce);
+	body.applyForce_w(normalForce);
 }
 RigidBody Ship::ConstructBody()
 {
