@@ -281,32 +281,35 @@ public:
 			nominalScreenHeight *= (1.0f - fElapsedTime * zoomRate);
 			setScreenHeightMeters(nominalScreenHeight);
 		}
-
-		// Allow space to pause simulation
+		bool simThisFrame = simRunning;
+		// Allow space to pause simulation, and do one frame at a time
 		if (simRunning && GetKey(Key::SPACE).bPressed) {
+			simThisFrame = false;
 			simRunning = false;
 		} else if (simRunning || GetKey(Key::SPACE).bPressed) {
+			simThisFrame = true;
+		}
+
+		if (simThisFrame) {
 			float dt = frameTimeStep;
 			if (GetKey(Key::CTRL).bHeld) dt = -dt;
-			// TODO BUGS Non linear on high acceleration causes a pogo like rattle. Not sure to call this a bug
-			// Mouse panning makes it go crazy.
+			
 			Pencil::clearDrawingQueue();
 			olc::vr2d displacement = ship.body.vel*0.1f;
 			Real frameBorder = (Real)2;
-			olc::vr2d maxMovement = { -(screenDims.x/2-frameBorder),(screenDims.y / 2 - frameBorder) };
+			olc::vr2d maxMovement = { -(screenDims.x / 2 - frameBorder),(screenDims.y / 2 - frameBorder) };
 			displacement = BoxClamp(displacement, maxMovement, -maxMovement);
 			olc::vf2d camTarget = ship.body.pos + displacement;
 			cam.updateState(camTarget, ship.body.vel, dt);
 			cameraPos = cam.pos;
-			
+
 			ship.updateState(dt);
-			
+
 			missionElapsedTime += dt;
 			// Test physics
 			physicsEngine.PropgateState(dt);
 			// Prototype HUD
 			hud.getShipState(ship);
-	
 		}
 
 		if (GetMouse(1).bPressed) {

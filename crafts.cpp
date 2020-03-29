@@ -53,7 +53,7 @@ void Ship::Draw() {
 
 
 void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
-
+	
 }
 RigidBody Ship::ConstructBody()
 {
