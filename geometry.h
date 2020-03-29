@@ -10,6 +10,15 @@ public:
 	olc::Pixel color = olc::WHITE;
 	VectorShape();
 };
+struct Transform {
+	Transform();
+	Transform(float Rotation, olc::vr2d position);
+	Transform(olc::Mat2d dcm, olc::vr2d position);
+	Real angle = (Real)0;
+	olc::Mat2d dcm;
+	olc::vr2d pos;
+
+};
 struct Contact {
 	Contact() : status(NO_INTERSECT), mag(0) {};
 	enum {

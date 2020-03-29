@@ -302,3 +302,13 @@ Contact Circle::Intersects(Line & L)
 
 	
 }
+
+Transform::Transform(){}
+
+Transform::Transform(float Rotation, olc::vr2d position)
+	: angle(Rotation), pos(position)
+{};
+
+Transform::Transform(olc::Mat2d dcm, olc::vr2d position)
+	: dcm(dcm), pos(position)
+{};

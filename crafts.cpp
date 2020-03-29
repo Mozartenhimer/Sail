@@ -8,7 +8,6 @@ using namespace olc;
 
 void Ship::init() {
 	body = ConstructBody();
-	void updateBodyInWorld();
 };
 
 Ship::Ship() {
@@ -42,15 +41,20 @@ void Ship::Draw() {
 RigidBody Ship::ConstructBody()
 {
 	RigidBody B;
+	// Front
+	Line tempLeft = { { 0.0f,1.0f },{ 0.5f,0.0f } };
+	Line tempRight = { { 0.0f,1.0f },{ -0.5f,0.0f } };
 	
-	Line tempLeg = { { 0.8f,-0.5f },{ 1.3f,-2.0f } };
-	B.addLine(tempLeg);
-	tempLeg = { { -0.8f,-0.5f },{ -1.3f,-2.0f } };
-	B.addLine(tempLeg);
-	
-	Circle Capsule;
-	Capsule.radius = 1.0f;
-	B.addCircle(Capsule);
+	B.addLine(tempLeft);
+	B.addLine(tempRight);
+	// Mid
+	tempLeft = {  { 0.5f,0.0f },{ 0.5f,-1.0f } };
+	tempRight = { { -0.5f,0.0f },{ -0.5f,-1.0f } };
+	B.addLine(tempLeft);
+	B.addLine(tempRight);
+	//Circle Capsule;
+	//Capsule.radius = 1.0f;
+	//B.addCircle(Capsule);
 
 	B.inertiaMoment = INFINITY;
 	return B;

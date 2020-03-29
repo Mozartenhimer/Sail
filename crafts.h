@@ -29,7 +29,7 @@ public:
 	
 	//! Get the current throttle from the main engine
 	
-	void updateBodyInWorld();
+
 
 	static RigidBody ConstructBody();
 };
