@@ -54,7 +54,8 @@ void Ship::Draw() {
 
 void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 	olc::vf2d appearantWind = body.vel - wind;
-	
+	float windSpeed = appearantWind.mag();
+	// WRAP THIS STUFF UP INTO A FOIL class
 	float windAngle = angle(appearantWind);
 	
 	sailAngleFromCenterline = windAngle-getHeading();	
@@ -69,13 +70,22 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 	if (sailAngleFromCenterline < -sailSlackAngle) {
 		sailAngleFromCenterline = -sailSlackAngle;
 	}
+
+
 	float sailAngleWorld = getHeading() + sailAngleFromCenterline;
 	float aoa = sailAngleWorld - windAngle;
-	dbg(aoa); dbg(sailAngleFromCenterline);
-	olc::vf2d normalForce = Mat2d(sailAngleFromCenterline+getHeading())*olc::vf2d(.0f, 1.0f) *aoa;
-	Pencil::AddArrow(body.pos, normalForce);
-	body.applyForce_w(normalForce);
+	dbg(appearantWind); dbg(windSpeed);
+	
+	olc::vf2d normalSailForce = 
+		Mat2d(sailAngleFromCenterline + getHeading())*olc::vf2d(.0f, 1.0f)*sailFoil.normalForce(windSpeed, aoa);
+	Pencil::AddArrow(body.pos, normalSailForce);
+	olc::vf2d axialSailForce =
+		Mat2d(sailAngleFromCenterline + getHeading())*olc::vf2d(1.0f,0.0f)*sailFoil.axialForce(windSpeed, aoa);
+	Pencil::AddArrow(body.pos, axialSailForce);
+	body.applyForce_w(normalSailForce);
+
 }
+
 RigidBody Ship::ConstructBody()
 {
 	RigidBody B;
