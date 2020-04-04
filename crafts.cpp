@@ -82,6 +82,7 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 	if (sailAngleFromCenterline < -sailSlackAngle) {
 		sailAngleFromCenterline = -sailSlackAngle;
 	}
+	
 	float sailAngleWorld = getHeading() + sailAngleFromCenterline;
 	float sailAOA = sailAngleWorld - windAngle;
 
@@ -89,9 +90,9 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 
 	sailAOA = wrapAngle(sailAOA);
 	Pencil::DrawDebugLine("sailAOA" + std::to_string(sailAOA));
-	
+
 	olc::vf2d normalSailForce = Mat2d(sailAngleFromCenterline + getHeading())*olc::vf2d(.0f, 1.0f)*sailFoil.normalForce(windSpeed, sailAOA);
-	
+	Pencil::DrawDebugLine("SailNormalForce" + std::to_string(normalSailForce.mag()));
 	dbg(normalSailForce);
 	//Pencil::AddArrow(body.pos, normalSailForce);
 	olc::vf2d axialSailForce = Mat2d(sailAngleFromCenterline + getHeading())*olc::vf2d(1.0f,0.0f)*sailFoil.axialForce(windSpeed, sailAOA);
