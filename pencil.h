@@ -5,6 +5,9 @@
 #include <iomanip>
 #include "physics.h"
 #include "geometry.h"
+
+#define dbgLine(VAR) Pencil::DrawDebugLine( std::string(#VAR) + "="  + std::to_string(VAR))
+
 struct Arrow {
 	olc::vf2d tailLocation;
 	olc::vf2d vector;
@@ -77,10 +80,12 @@ public:
 	static inline void DrawNow() {
 		for (auto & A : arrows) {
 			// If they're getting this big, it takes forever to render, so why not just break before in an inifinite loop?
-			if (A.vector.mag() > 1000) {
+			if (A.vector.mag() > 1000 || A.tailLocation.mag() > 1E6) {
 				continue;
 			}
-			A.Draw();
+			else {
+				A.Draw();
+			}
 		}
 	};
 	static inline void clearDrawingQueue() {

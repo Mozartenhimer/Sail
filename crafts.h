@@ -5,27 +5,37 @@
 #include "globals.h"
 
 
+inline float clampAngle(float angle) {
+	angle = fmod(angle+M_PI, (float)2*M_PI);
+	if (angle < 0)
+		angle += 2 * M_PI;
+	angle -= M_PI;
+	return angle;
+}
 class Foil {
 public:
 	Foil() {};
 	//! \brief Normal force
 	float area = 1.0f;
 	float fluidDensity = 1.0f; // kg/m^3
-	float deadbandRad = (float)1.0*M_PI / 180;
-	float CaMult = 0.2f;
+	float linearRegion = (float)1.0*M_PI / 180;
+	float CaMult = 0.15f;
 	float CnMult = 1.0f;
 	inline float Cn(float aoa) {
-		// Deadband
-		if (abs(aoa) < deadbandRad ) {
-			return 0.0f;
+		// linear region 
+		if (aoa < linearRegion) {
+			return aoa * 8.6;
 		}
+
 		// Latex:
 		// \cos\left(x - p\right) ^ { 2 }\cdot\sin\left(\left(x\right) ^ { E }\right) ^ { 2 }+x\cdot0.4
+		
 		bool negate = false;
 		if (aoa < 0) {
 			negate = true;
 			aoa = -aoa;
 		}
+
 		const float & x = aoa;
 		const float p = -0.3141592653589793f;
 		const float E = 0.22f;
@@ -84,9 +94,7 @@ public:
 
 public:
 	inline float getHeading() {
-		float heading = body.rot;
-		heading = fmod(heading, M_PI * 2);
-		return heading;
+		return clampAngle(body.rot);
 	};
 	float rudderAngle = 0.0f;
 	float maxRudder = (float)M_PI / 2.0f;

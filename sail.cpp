@@ -3,7 +3,7 @@
 #include "hud.h"
 #include "Geometry.h"
 #include "plume.hpp"
-#include "thruster.hpp"
+//#include "thruster.hpp"
 #include "crafts.h"
 #include "physics.h"
 #include "pencil.h"
@@ -122,7 +122,7 @@ private:
 	double previousFrameTime = -1.0; //!< Previous realTime that the frame was rendered. See float frameDelay.
 	double realTime = 0.0; //!< Real Time Clock;
 	double missionElapsedTime = 0.0; //!< Game time
-	bool simRunning = true; //!< Basically game pause.
+	bool simRunning = false; //!< Basically game pause.
 	float throttleRate = 1.0f / 5.0f; // 1 over seconds from 0 to full throttle;
 
 public:
@@ -136,11 +136,9 @@ public:
 	//! Reset game to as if the executable just started
 	void ResetGameState() {
 		missionElapsedTime = 0;
-
+		ship = Ship();
 		ship.body.pos = olc::vf2d(0.0f, 0.0f);
 		ship.body.vel = olc::vf2d(0.0f, 0.0f);
-		ship.body.rot = 0.0f;
-		ship.body.rotDot = 0.0f;
 		cam.anchorPos = cam.pos = ship.body.pos;
 		cam.anchorVel = cam.vel = ship.body.vel;
 		cameraPos = cam.pos;
@@ -149,6 +147,7 @@ public:
 		ship.body.rotDot = 0.0f;
 		ship.body.inertiaMoment = INFINITY;
 		//! Updates the positions of the bodies.
+		
 		physicsEngine.PropgateState(0.0f);
 	};
 public:
@@ -190,12 +189,20 @@ public:
 public:
 	bool OnUserCreate() override
 	{
+
+		//Foil testFoil;
+		
+		/*std::fstream test("clampAngle.txt",std::fstream::binary | std::fstream::out);
+		for (float alpha = -2 * M_PI ; alpha < 2 * M_PI ; alpha += 0.05) {
+			std::cout << alpha << "    " << std::to_string(clampAngle(alpha)) << std::endl;
+			test << std::to_string(alpha) << "     " << std::to_string(clampAngle(alpha)) << std::endl;
+		}
+		test.close();
+		std::cin.get();*/
 		
 		
-		Foil testFoil;
-		for (float = -M_PI)
 		// Maybe this is a good solution? You could do post processing. but it seems a little clunky.
-		Thruster::Renderer = this;
+		
 		hud.host = this;
 		AsteroidFont::host = this;
 
@@ -218,7 +225,8 @@ public:
 
 		frameDelay = 1.0f;
 		ResetGameState();
-		Pencil::headers = { "time","sailAOA","keelAOA","normalSailForce","axialSailForce","normalKeelForce","AxialKeelForce"};
+		Pencil::headers = { "time","sailAOA","keelAOA","normalSailForce",
+			"axialSailForce","normalKeelForce","AxialKeelForce","velX","velY","axDot","NormDot"};
 		return true;
 	}
 public:
@@ -231,10 +239,13 @@ public:
 		//! This variable is used for all physics simulations. fElapsed time is used for user input.
 		float frameTimeStep = fElapsedTime* timeMultiplier;	// the timeMultiplier has an effect.
 		// Cause an intential slow down of the game to enforce maximum game dt
+		
 		if (frameTimeStep > (frameMaxDt)) {
 			frameTimeStep = frameMaxDt;
 		}
-		
+		// LOCK FRAME TIME STEP FOR DEBUGGING
+		//frameTimeStep = 0.0005f;
+
 
 		
 		olc::vf2d mousePos(toWorld(olc::vi2d(GetMouseX(), GetMouseY())));
