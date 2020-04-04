@@ -5,7 +5,7 @@
 #include "globals.h"
 
 
-inline float clampAngle(float angle) {
+inline float wrapAngle(float angle) {
 	angle = fmod(angle+M_PI, (float)2*M_PI);
 	if (angle < 0)
 		angle += 2 * M_PI;
@@ -94,7 +94,7 @@ public:
 
 public:
 	inline float getHeading() {
-		return clampAngle(body.rot);
+		return wrapAngle(body.rot);
 	};
 	float rudderAngle = 0.0f;
 	float maxRudder = (float)M_PI / 2.0f;

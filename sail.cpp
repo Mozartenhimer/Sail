@@ -192,10 +192,10 @@ public:
 
 		//Foil testFoil;
 		
-		/*std::fstream test("clampAngle.txt",std::fstream::binary | std::fstream::out);
+		/*std::fstream test("wrapAngle.txt",std::fstream::binary | std::fstream::out);
 		for (float alpha = -2 * M_PI ; alpha < 2 * M_PI ; alpha += 0.05) {
-			std::cout << alpha << "    " << std::to_string(clampAngle(alpha)) << std::endl;
-			test << std::to_string(alpha) << "     " << std::to_string(clampAngle(alpha)) << std::endl;
+			std::cout << alpha << "    " << std::to_string(wrapAngle(alpha)) << std::endl;
+			test << std::to_string(alpha) << "     " << std::to_string(wrapAngle(alpha)) << std::endl;
 		}
 		test.close();
 		std::cin.get();*/
