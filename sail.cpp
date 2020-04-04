@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "globals.h"
-#include "hud.h"
+
 #include "Geometry.h"
-#include "plume.hpp"
+
 //#include "thruster.hpp"
 #include "crafts.h"
 #include "physics.h"
@@ -31,7 +31,7 @@ Let peole know
 
 
 using namespace olc;
-olc::VxOLCPGE * AsteroidFont::host;
+
 bool debugOverlay = true;
 // Rand stuff is stolen from OLC Proc gen video
 static uint32_t nProcGen = 0; // Seed 
@@ -99,7 +99,7 @@ struct Camera {
 class Lando : public VxOLCPGE
 {
 public:
-	HUD hud;
+
 	RigidBody testObj;
 	Pricipia physicsEngine; 
 
@@ -111,7 +111,7 @@ public:
 	float nominalScreenHeight;
 	Real shockAngle;
 	Line mouseLine;
-	Plume plume;
+	
 	Camera cam; 
 	
 	float frameMaxDt; //!< The maximum simulation time that can go by between frames. Will cause a slow down if 1/fElapsedTime less  than this
@@ -126,7 +126,7 @@ private:
 	float throttleRate = 1.0f / 5.0f; // 1 over seconds from 0 to full throttle;
 
 public:
-	Lando() : hud(this)
+	Lando()
 	{
 		Pencil::host = this;
 		ship.host = this;
@@ -202,11 +202,6 @@ public:
 		
 		
 		// Maybe this is a good solution? You could do post processing. but it seems a little clunky.
-		
-		hud.host = this;
-		AsteroidFont::host = this;
-
-		hud.anchor = { 0,400 };
 		
 		nominalScreenHeight = screenDims.y;
 		
@@ -333,8 +328,7 @@ public:
 			ship.updateState(dt);
 
 			physicsEngine.PropgateState(dt);
-			// Prototype HUD
-			hud.getShipState(ship);
+;
 
 		}
 
@@ -356,12 +350,10 @@ public:
 
 		// Actual
 		ship.Draw();
-
-		// Draw Centroidsqe
-		//hud.Draw();
 		DrawDebugLine("Sail Slack Angle:" + std::to_string(ship.sailSlackAngle* 180 / M_PI));
 		DrawDebugLine("Sail     Angle:" + std::to_string(ship.sailAngleFromCenterline * 180 / M_PI));
 		DrawDebugLine("Heading       :" + std::to_string(ship.getHeading() * 180 / M_PI));
+		DrawDebugLine("Speed: " + std::to_string(ship.body.vel.mag()));
 		if (isnan(ship.body.pos.x) && simRunning) {
 			simRunning = false;
 			Pencil::writeLog();

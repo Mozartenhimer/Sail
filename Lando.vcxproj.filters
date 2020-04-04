@@ -21,13 +21,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="thruster.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Geometry.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="plume.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="crafts.cpp">
@@ -45,9 +39,6 @@
     <ClCompile Include="physics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="asteroidsFont.c">
-      <Filter>Source Files\Attic</Filter>
-    </ClCompile>
     <ClCompile Include="Pencil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -56,9 +47,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="thruster.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Geometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -86,14 +74,8 @@
     <ClInclude Include="physics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hud.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="pencil.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AsteroidsFont.h">
-      <Filter>Header Files\Attic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
