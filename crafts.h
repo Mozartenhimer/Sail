@@ -11,7 +11,12 @@ public:
 	//! \brief Normal force
 	float area = 1.0f;
 	float fluidDensity = 1.0f; // kg/m^3
+	float deadbandRad = (float)1.0*M_PI / 180;
 	inline float Cn(float aoa) {
+		// Deadband
+		if (abs(aoa) < deadbandRad ) {
+			return 0.0f;
+		}
 		// Latex:
 		// \cos\left(x - p\right) ^ { 2 }\cdot\sin\left(\left(x\right) ^ { E }\right) ^ { 2 }+x\cdot0.4
 		bool negate = false;
@@ -35,10 +40,7 @@ public:
 	//! \brief Axial force
 	inline float Ca(float aoa)
 	{
-		//Latiex: y\ =C+\cos\left(2x\right)\cdot C
-		const float C = 0.09;
-		const float & x = aoa;
-		return pow(sinf(aoa), 2) + 0.1;
+		return sinf(aoa);
 	};
 	//inline olc::vf2d force(olc::vf2d fluidVel, float aoa) {
 	//	//! \brief returns in frame of foil.
@@ -52,15 +54,11 @@ public:
 		//! \brief returns in frame of foil.
 		const float dynPress = 0.5*fluidDensity*pow(fluidVel,2);
 		return Cn(aoa)*area*dynPress;
-
-
 	}
-
+	
 	inline float axialForce(float fluidVel, float aoa) {
-		//! \brief returns in frame of foil.
-		// 
-		return -2.0f;
-
+		const float dynPress = 0.5*fluidDensity*pow(fluidVel, 2);
+		return (Ca(aoa)*area*dynPress);
 	}
 };
 

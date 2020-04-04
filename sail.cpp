@@ -9,7 +9,7 @@
 #include "pencil.h"
 /*
  TODO:
-
+	Make wind persisent state of ship object.
  Wind field shown in background
 Sail, rudder and keel forces
 Sail & rudder rendering
@@ -347,7 +347,6 @@ public:
 		DrawDebugLine("Sail Slack Angle:" + std::to_string(ship.sailSlackAngle* 180 / M_PI));
 		DrawDebugLine("Sail     Angle:" + std::to_string(ship.sailAngleFromCenterline * 180 / M_PI));
 		DrawDebugLine("Heading       :" + std::to_string(ship.getHeading() * 180 / M_PI));
-		DrawDebugLine("Wind          :" + std::to_string(angle(-wind(ship.body.pos))* 180 / M_PI));
 		Pencil::DrawNow();
 		
 		return true;

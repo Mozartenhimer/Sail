@@ -52,7 +52,9 @@ public:
 			host->DrawLine(host->toScreen(L.p2()), host->toScreen(L.p1()), Color);
 		}; 
 	}
-
+	static inline void DrawDebugLine(const std::string & debugLine){
+		host->DrawDebugLine(debugLine);
+	}
 	static inline void Draw(RigidBody & B, olc::Pixel Color = 0)
 	{
 		for (auto & C : B.circles_w) {
