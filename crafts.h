@@ -12,6 +12,8 @@ public:
 	float area = 1.0f;
 	float fluidDensity = 1.0f; // kg/m^3
 	float deadbandRad = (float)1.0*M_PI / 180;
+	float CaMult = 0.2f;
+	float CnMult = 1.0f;
 	inline float Cn(float aoa) {
 		// Deadband
 		if (abs(aoa) < deadbandRad ) {
@@ -40,7 +42,7 @@ public:
 	//! \brief Axial force
 	inline float Ca(float aoa)
 	{
-		return sinf(aoa);
+		return cosf(aoa);
 	};
 	//inline olc::vf2d force(olc::vf2d fluidVel, float aoa) {
 	//	//! \brief returns in frame of foil.
@@ -53,12 +55,12 @@ public:
 	inline float normalForce(float fluidVel, float aoa) {
 		//! \brief returns in frame of foil.
 		const float dynPress = 0.5*fluidDensity*pow(fluidVel,2);
-		return Cn(aoa)*area*dynPress;
+		return Cn(aoa)*area*dynPress*CnMult;
 	}
 	
 	inline float axialForce(float fluidVel, float aoa) {
 		const float dynPress = 0.5*fluidDensity*pow(fluidVel, 2);
-		return (Ca(aoa)*area*dynPress);
+		return (Ca(aoa)*area*dynPress*CaMult);
 	}
 };
 
@@ -92,9 +94,12 @@ public:
 	inline float getRudder() { return rudderAngle; };
 
 	RigidBody body;
+	Foil keelFoil;
+
 	olc::vf2d rudderPivot;
 	SegmentedCurve rudder;
 	SegmentedCurve rudder_w;
+	
 	olc::vf2d sailPivot;
 	SegmentedCurve sail;
 	SegmentedCurve sail_w;

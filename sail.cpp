@@ -271,6 +271,7 @@ public:
 		if (GetKey(olc::Key::W).bHeld) { ship.setSail(ship.getSailSlackAngle() + sailRate * frameTimeStep); }
 		if (GetKey(olc::Key::S).bHeld) { ship.setSail(ship.getSailSlackAngle() - sailRate * frameTimeStep); }
 
+		// 
 
 		//----- Camera Controls
 		constexpr float camMoveRate = 1000.0f; // m/s

@@ -70,6 +70,11 @@ public:
 	static void AddArrow(olc::vf2d tailLocation, olc::vf2d vector, float scale = 1.0f, olc::Pixel color = olc::Pixel(255, 150, 150));
 	static inline void DrawNow() {
 		for (auto & A : arrows) {
+			// If they're getting this big, it takes forever to render, so why not just break before in an inifinite loop?
+			if (A.vector.mag() > 1000) {
+				__debugbreak;
+				dbg(A.vector.mag2());
+			}
 			A.Draw();
 		}
 	};
