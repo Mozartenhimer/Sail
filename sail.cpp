@@ -64,7 +64,7 @@ int rndInt(int min, int max)
 olc::vf2d wind(olc::vf2d position) // Time implied
 {
 	// Return the velocity vector of the wind.
-	return { -3.0f,0.0f };
+	return { -6.0f,0.0f };
 }
 struct Camera {
 	// It's actually a orhogonal 2d sping mass damper
@@ -192,7 +192,8 @@ public:
 	{
 		
 		
-				
+		Foil testFoil;
+		for (float = -M_PI)
 		// Maybe this is a good solution? You could do post processing. but it seems a little clunky.
 		Thruster::Renderer = this;
 		hud.host = this;
@@ -217,7 +218,7 @@ public:
 
 		frameDelay = 1.0f;
 		ResetGameState();
-		
+		Pencil::headers = { "time","sailAOA","keelAOA","normalSailForce","axialSailForce","normalKeelForce","AxialKeelForce"};
 		return true;
 	}
 public:
@@ -228,12 +229,12 @@ public:
 		
 
 		//! This variable is used for all physics simulations. fElapsed time is used for user input.
-		float frameTimeStep = fElapsedTime* timeMultiplier;
+		float frameTimeStep = fElapsedTime* timeMultiplier;	// the timeMultiplier has an effect.
 		// Cause an intential slow down of the game to enforce maximum game dt
 		if (frameTimeStep > (frameMaxDt)) {
 			frameTimeStep = frameMaxDt;
 		}
-		// the timeMultiplier has an effect.
+		
 
 		
 		olc::vf2d mousePos(toWorld(olc::vi2d(GetMouseX(), GetMouseY())));
@@ -302,9 +303,12 @@ public:
 		}
 
 		if (simThisFrame) {
+			const float dt = frameTimeStep;
+			missionElapsedTime += dt;
+			Pencil::log(missionElapsedTime);
 			Pencil::clearDrawingQueue();
-			float dt = frameTimeStep;
-			if (GetKey(Key::CTRL).bHeld) dt = -dt; // Run backwards
+			
+			
 			// Camera crap
 
 			olc::vr2d displacement = ship.body.vel*0.1f;
@@ -317,11 +321,10 @@ public:
 			ship.applyEnviromentForces(wind(ship.body.pos));
 			ship.updateState(dt);
 
-			missionElapsedTime += dt;
-			// Test physics
 			physicsEngine.PropgateState(dt);
 			// Prototype HUD
 			hud.getShipState(ship);
+
 		}
 
 		if (GetMouse(1).bPressed) {
@@ -348,6 +351,10 @@ public:
 		DrawDebugLine("Sail Slack Angle:" + std::to_string(ship.sailSlackAngle* 180 / M_PI));
 		DrawDebugLine("Sail     Angle:" + std::to_string(ship.sailAngleFromCenterline * 180 / M_PI));
 		DrawDebugLine("Heading       :" + std::to_string(ship.getHeading() * 180 / M_PI));
+		if (isnan(ship.body.pos.x) && simRunning) {
+			simRunning = false;
+			Pencil::writeLog();
+		}
 		Pencil::DrawNow();
 		
 		return true;

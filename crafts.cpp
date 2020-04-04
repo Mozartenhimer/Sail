@@ -19,7 +19,7 @@ void Ship::init() {
 	rudderPivot = { -1.0f ,0.0f};
 	keelFoil.area = 0.1f;
 	keelFoil.fluidDensity = 1000.0f;
-
+	body.mass = 10.0f;
 };
 
 
@@ -74,11 +74,13 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 	}
 	float sailAngleWorld = getHeading() + sailAngleFromCenterline;
 	float sailAOA = sailAngleWorld - windAngle;
-	
+	Pencil::log(sailAOA);
 	
 	olc::vf2d normalSailForce = Mat2d(sailAngleFromCenterline + getHeading())*olc::vf2d(.0f, 1.0f)*sailFoil.normalForce(windSpeed, sailAOA);
 	//Pencil::AddArrow(body.pos, normalSailForce);
 	olc::vf2d axialSailForce = Mat2d(sailAngleFromCenterline + getHeading())*olc::vf2d(1.0f,0.0f)*sailFoil.axialForce(windSpeed, sailAOA);
+	Pencil::log(normalSailForce.mag());
+	Pencil::log(axialSailForce.mag());
 	// Jank sign correctness
 	// Flip sign if drag opposes appearent wind
 	if (axialSailForce.dot(appearantWind) > 0) {
@@ -91,9 +93,14 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 
 	// Compute keel forces
 	current += body.vel;
-	float keelAOA = getHeading() - angle(current) ;
+	float keelAOA = clampAngle(getHeading() - angle(current));
+	Pencil::log(keelAOA);
 	olc::vf2d normalKeelForce = Mat2d(getHeading())*olc::vf2d(0.0f, 1.0f)*keelFoil.normalForce(current.mag(), keelAOA);
+	olc::vf2d axialKeelForce = Mat2d(sailAngleFromCenterline + getHeading())*olc::vf2d(1.0f, 0.0f)*sailFoil.axialForce(windSpeed, sailAOA);
 	body.applyForce_w(normalKeelForce);
+	Pencil::log(normalKeelForce.mag());
+	Pencil::log(axialKeelForce.mag());
+
 	Pencil::AddArrow(body.pos, normalKeelForce, 1.0f, olc::Pixel(200, 200, 200));
 	Pencil::DrawDebugLine("keelAOA:" + std::to_string(keelAOA));
 	/*

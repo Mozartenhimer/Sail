@@ -1,6 +1,8 @@
 #pragma once
 #include "vectorExtendedPGE.hpp"
 #include <vector>
+#include <fstream>
+#include <iomanip>
 #include "physics.h"
 #include "geometry.h"
 struct Arrow {
@@ -10,6 +12,10 @@ struct Arrow {
 	float scale;
 	void Draw();
 };
+
+
+
+
 class Pencil {
 	// Singleton
 	// Trying to make this a buffered Draw, so that debug information can be requested to be drawn not every frame
@@ -72,8 +78,7 @@ public:
 		for (auto & A : arrows) {
 			// If they're getting this big, it takes forever to render, so why not just break before in an inifinite loop?
 			if (A.vector.mag() > 1000) {
-				__debugbreak;
-				dbg(A.vector.mag2());
+				continue;
 			}
 			A.Draw();
 		}
@@ -81,5 +86,34 @@ public:
 	static inline void clearDrawingQueue() {
 		arrows.clear();
 	};
+	
 
+	// Debug logging -- TODO wrap this in debugLog Class
+	static  std::vector<std::string> headers;
+	static std::vector<float> dataPoints;
+	
+	static inline void log(float data) {
+		dataPoints.push_back(data);
+	}
+	
+	static inline void writeLog() {
+		const int nFields = headers.size();
+		const int width = 25;
+		if (dataPoints.size() / nFields > 0) {
+			std::fstream output("log.txt", std::fstream::out | std::fstream::binary);
+			output << "#";
+			for (auto & Head : headers) {
+				output << std::setw(width) << Head;
+			}
+			output << std::endl;
+			for (int row = 0; row < dataPoints.size() / nFields; row++) {
+				for (int col = 0; col < nFields; col++) {
+					output << std::setprecision(10) << std::setw(width) << dataPoints.at(row*nFields + col);
+				}
+				output << std::endl;
+			}
+		}
+	}
+	
+	
 };

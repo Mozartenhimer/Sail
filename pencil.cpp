@@ -2,6 +2,9 @@
 #include "pencil.h"
 olc::VxOLCPGE * Pencil::host;
 std::vector<Arrow> Pencil::arrows;
+std::vector<std::string> Pencil::headers;
+std::vector<float> Pencil::dataPoints;
+
 void Arrow::Draw() {
 	// TODO Draw Arrow proper.
 	olc::vi2d loc1 = Pencil::host->toScreen(tailLocation);
