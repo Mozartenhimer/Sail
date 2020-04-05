@@ -412,9 +412,9 @@ int main(int argc, char ** argv){
 		if (test == "foil") {
 			Foil f;
 			std::fstream out("foil.txt",std::fstream::binary| std::fstream::out);
-			out << "Angle             Ca           Cn" << std::endl;
+			out << "Angle\tCa\tCn" << std::endl;
 			for (float A = -M_PI; A <= M_PI; A += M_PI / 5) {
-				out << A << "   " << f.Ca(A) << "  " << f.Cn(A) << std::endl;
+				out << A << "\t" << f.Ca(A) << "\t" << f.Cn(A) << std::endl;
 			}
 			out.close();
 		}
