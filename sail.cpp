@@ -388,9 +388,12 @@ public:
 			DrawString(olc::vi2d(100, H+20), "         Press R to restart.", msgColor);
 			DrawString(olc::vi2d(100, H+30), "      Else press TAB to unpause.", msgColor);
 		}
-		if (isnan(ship.body.pos.x) && simRunning) {
+		if (isnan(ship.body.pos.x)) {
 			simRunning = false;
+			DrawString(olc::vi2d(100, H + 30), ".. Sorry There's some bugs... Press R to restart.");
+#ifdef _DEBUG
 			Pencil::writeLog();
+#endif
 		}
 
 		if(debugOn) Pencil::DrawNow();

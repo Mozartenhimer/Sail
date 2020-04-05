@@ -98,10 +98,13 @@ public:
 	static std::vector<float> dataPoints;
 	
 	static inline void log(float data) {
+#ifdef _DEBUG
 		dataPoints.push_back(data);
+#endif
 	}
 	
 	static inline void writeLog() {
+#ifdef _DEBUG
 		const int nFields = headers.size();
 		const int width = 25;
 		if (dataPoints.size() / nFields > 0) {
@@ -118,7 +121,8 @@ public:
 				output << std::endl;
 			}
 		}
+#endif
 	}
-	
+
 	
 };
