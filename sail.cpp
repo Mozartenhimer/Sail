@@ -271,12 +271,12 @@ public:
 		if (GetKey(olc::Key::A).bHeld) { ship.setRudder(ship.getRudder() - rudderRate * frameTimeStep);}
 		if (GetKey(olc::Key::D).bHeld) { ship.setRudder(ship.getRudder() + rudderRate * frameTimeStep);}
 		float turnRate = 2.0f;
-		if (GetKey(olc::Key::Q).bHeld) { ship.body.rot += turnRate * frameTimeStep; }
-		if (GetKey(olc::Key::E).bHeld) { ship.body.rot -= turnRate * frameTimeStep; }
+		if (GetKey(olc::Key::LEFT).bHeld) { ship.body.rot += turnRate * frameTimeStep; }
+		if (GetKey(olc::Key::RIGHT).bHeld) { ship.body.rot -= turnRate * frameTimeStep; }
 		// Sail
 		float sailRate = 1.0f;
-		if (GetKey(olc::Key::W).bHeld) { ship.setSail(ship.getSailSlackAngle() + sailRate * frameTimeStep); }
-		if (GetKey(olc::Key::S).bHeld) { ship.setSail(ship.getSailSlackAngle() - sailRate * frameTimeStep); }
+		if (GetKey(olc::Key::UP).bHeld) { ship.setSail(ship.getSailSlackAngle() + sailRate * frameTimeStep); }
+		if (GetKey(olc::Key::DOWN).bHeld) { ship.setSail(ship.getSailSlackAngle() - sailRate * frameTimeStep); }
 
 		// 
 
@@ -354,6 +354,11 @@ public:
 		DrawDebugLine("Sail     Angle:" + std::to_string(ship.sailAngleFromCenterline * 180 / M_PI));
 		DrawDebugLine("Heading       :" + std::to_string(ship.getHeading() * 180 / M_PI));
 		DrawDebugLine("Speed: " + std::to_string(ship.body.vel.mag()));
+		if (ship.body.pos.x < 10.0f) {
+			DrawString(olc::vi2d(5, 460), "Use Arrow Keys to move. Race to upwind!");
+			DrawString(olc::vi2d(5, 470), "LEFT/RIGHT: Rudder");
+			DrawString(olc::vi2d(5, 480), "UP/DOWN Let sail out/pull in sail");
+		}
 		if (isnan(ship.body.pos.x) && simRunning) {
 			simRunning = false;
 			Pencil::writeLog();

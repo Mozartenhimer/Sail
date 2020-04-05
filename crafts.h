@@ -81,7 +81,8 @@ public:
 	float sailSlackAngle = 0.0f;;
 	float sailLimitAngle = (float)M_PI / 2.0f;
 	float sailAngleFromCenterline = 0.0;
-
+	float minSailSlackAngle = (float)180 / M_PI;
+	
 	inline void setSail(float angle)
 	{
 		if (angle < sailLimitAngle)

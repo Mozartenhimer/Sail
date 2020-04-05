@@ -76,13 +76,14 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 	sailAngleFromCenterline = windAngle-getHeading();	
 	dbg(sailAngleFromCenterline);
 	// clamp sail to controls
+	
 	if (sailAngleFromCenterline > sailSlackAngle){
 		sailAngleFromCenterline = sailSlackAngle;
 	}
 	if (sailAngleFromCenterline < -sailSlackAngle) {
 		sailAngleFromCenterline = -sailSlackAngle;
 	}
-	
+
 	float sailAngleWorld = getHeading() + sailAngleFromCenterline;
 	float sailAOA = sailAngleWorld - windAngle;
 
