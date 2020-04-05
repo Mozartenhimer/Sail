@@ -32,7 +32,7 @@ Let peole know
 
 using namespace olc;
 
-bool debugOverlay = true;
+
 // Rand stuff is stolen from OLC Proc gen video
 static uint32_t nProcGen = 0; // Seed 
 uint32_t rnd()
@@ -67,7 +67,7 @@ olc::vf2d wind(olc::vf2d position) // Time implied
 	return { -6.0f,0.0f };
 }
 struct Camera {
-	// It's actually a orhogonal 2d sping mass damper
+	// It's actually a orthogonal 2d sping mass damper
 	float omega_nom = (float)M_PI*20.0f;
 	float zeta_nom = 1.0f;
 	olc::vf2d anchorPos; // In world space
@@ -212,7 +212,9 @@ public:
 
 
 		// Maybe this is a good solution? You could do post processing. but it seems a little clunky.
-
+#ifndef _DEBUG
+		debugOn = false;
+#endif
 		nominalScreenHeight = screenDims.y;
 
 
@@ -403,7 +405,23 @@ public:
 };
 
 
-int main(){
+int main(int argc, char ** argv){
+	
+	if (argc > 1 && strcmp(argv[1], "-t") == 0) {
+		std::string test(argv[2]);
+		if (test == "foil") {
+			Foil f;
+			std::fstream out("foil.txt",std::fstream::binary| std::fstream::out);
+			out << "Angle             Ca           Cn" << std::endl;
+			for (float A = -M_PI; A <= M_PI; A += M_PI / 5) {
+				out << A << "   " << f.Ca(A) << "  " << f.Cn(A) << std::endl;
+			}
+			out.close();
+		}
+		exit(0);
+	} 
+	
+	
 	Lando bedStead;
 
 	if (bedStead.Construct(500, 500, 2, 2)) {
