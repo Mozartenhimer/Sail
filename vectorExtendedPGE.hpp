@@ -107,6 +107,7 @@ namespace olc {
 		size_t debugInfoFrame = 0;
 		std::vector<std::string> dbgStrings;
 	public:
+		bool debugOn = true;
 		inline size_t getCurrentFrameNum() { return nFramesRendered; };
 		float getPixelsPerMeter() const { return pixelsPerMeter; };
 		inline void DrawDebugLine(std::string const & info) {
@@ -199,8 +200,10 @@ namespace olc {
 	bool VxOLCPGE::OnUserUpdate(float fElapsedTime)
 	{
 		bool status = OnEveryFrame(fElapsedTime);
-		for (size_t i = 0; i < dbgStrings.size(); i++) {
-			DrawString(1, 1 + 10 * (int32_t)i, dbgStrings[i],WHITE);
+		if (debugOn){
+			for (size_t i = 0; i < dbgStrings.size(); i++) {
+				DrawString(1, 1 + 10 * (int32_t)i, dbgStrings[i], WHITE);
+			}
 		}
 		nFramesRendered++;
 		return status; 

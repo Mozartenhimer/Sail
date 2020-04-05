@@ -281,7 +281,7 @@ public:
 		//
 		// ---- Debug Controls
 		if (GetKey(Key::TAB).bPressed) simRunning = !simRunning;
-		if (GetKey(Key::ENTER).bPressed)  ship.body.setFixed(!ship.body.isFixed());
+		if (GetKey(Key::ENTER).bPressed)  debugOn = !debugOn; //  Toggle debug bit
 		if (GetKey(Key::R).bPressed)  ResetGameState();
 
 		//----- Ship Controls
@@ -355,7 +355,7 @@ public:
 		// DRAWING 
 
 		//debug
-		Draw(mouseLoopBack);
+		if(debugOn) Draw(mouseLoopBack);
 
 		// Actual
 		ship.Draw();
@@ -392,7 +392,8 @@ public:
 			simRunning = false;
 			Pencil::writeLog();
 		}
-		Pencil::DrawNow();
+
+		if(debugOn) Pencil::DrawNow();
 		
 		return true;
 	}
