@@ -23,17 +23,18 @@ public:
 	float CnMult = 1.0f;
 	inline float Cn(float aoa) {
 		// linear region 
-		if (aoa < linearRegion) {
-			return aoa * 8.6;
-		}
+
 
 		// Latex:
 		// \cos\left(x - p\right) ^ { 2 }\cdot\sin\left(\left(x\right) ^ { E }\right) ^ { 2 }+x\cdot0.4
 		
-		bool negate = false;
+		float sign = 1.0f;
 		if (aoa < 0) {
-			negate = true;
+			sign = -1.0f;
 			aoa = -aoa;
+		}
+		if (aoa < linearRegion) {
+			return sign*aoa * 8.6;
 		}
 
 		const float & x = aoa;
@@ -44,10 +45,8 @@ public:
 		const float cosTerm = pow(cos(x - p), 2);
 
 		const float sinTerm = pow(cos(pow(x, E)), 2);
-		if (negate)
-			return -(cosTerm*sinTerm + x * draggy)*constant;
-		else
-			return  (cosTerm*sinTerm + x * draggy)*constant;
+
+			return sign*(cosTerm*sinTerm + x * draggy)*constant;
 	};
 	//! \brief Axial force
 	inline float Ca(float aoa)

@@ -211,7 +211,7 @@ public:
 		std::cin.get();*/
 
 
-		// Maybe this is a good solution? You could do post processing. but it seems a little clunky.
+		
 #ifndef _DEBUG
 		debugOn = false;
 #endif
