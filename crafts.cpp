@@ -149,17 +149,23 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 	}
 	*/
 	// Rudder
+	olc::vf2d RudderAdditionalVel = Mat2d((double)getHeading())*(-rudderPivot.cross(body.rotDot));
+	
+	olc::vf2d rudderCurrent = current + RudderAdditionalVel;
+	
+	Pencil::AddArrow(body.pos + Mat2d(getHeading())*rudderPivot, RudderAdditionalVel,1.0f,olc::Pixel(100,100,100));
+	;
 
 	// This does not take into account added rudder current due to 
 	float rudderAngle_w = getHeading() + rudderAngle;
-	float rudderAOA = wrapAngle(rudderAngle_w - angle(current));
+	float rudderAOA = wrapAngle(rudderAngle_w - angle(rudderCurrent));
 	Pencil::DrawDebugLine("Rudder AOA:" + std::to_string(rudderAOA));
-	
-	olc::vf2d normalRudderForce = Mat2d(rudderAngle_w)*olc::vf2d(.0f, 1.0f)*rudderFoil.normalForce(current.mag(), rudderAOA);
-	
+	olc::vf2d normalRudderForce = Mat2d(rudderAngle_w)*olc::vf2d(.0f, 1.0f)*rudderFoil.normalForce(rudderCurrent.mag(), rudderAOA);
 	float rudderMoment = normalRudderForce.cross(rudderPivot);
+	
 	Pencil::DrawDebugLine("Rudder Moment:" + std::to_string(rudderMoment));
-	Pencil::AddArrow(body.pos + Mat2d(getHeading())*rudderPivot, normalRudderForce);
+	Pencil::DrawDebugLine("Rudder Normal Force" + std::to_string(normalRudderForce.mag()));
+	Pencil::AddArrow(body.pos + Mat2d(getHeading())*rudderPivot, normalRudderForce,0.1f);
 	
 	//`olc::vf2d axialSailForce = Mat2d(sailAngleFromCenterline + getHeading())*olc::vf2d(1.0f, 0.0f)*sailFoil.axialForce(windSpeed, sailAOA);
 
@@ -173,10 +179,14 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 	//Pencil::AddArrow(body.pos, -appearantWind, 0.1f, olc::Pixel(255, 0, 0));
 	//body.applyForce_w(normalSailForce);
 	//body.applyForce_w(axialSailForce);
-	body.applyForce_w(normalRudderForce);
+	//body.applyForce_w(normalRudderForce);
 	
-	body.applyMoment(-rudderMoment);
-
+	//body.applyMoment(-rudderMoment);
+	
+	// Apply rotational damping
+    double dampFactor = 0.1f;
+	Pencil::DrawDebugLine("BodyRotDot" + std::to_string(body.rotDot));
+	body.applyMoment(-pow(body.rotDot, 2)*dampFactor);
 
 	Pencil::DrawDebugLine("-------------");
 }
