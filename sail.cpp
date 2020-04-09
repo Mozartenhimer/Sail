@@ -224,17 +224,6 @@ public:
 	bool OnUserCreate() override
 	{
 
-		//Foil testFoil;
-
-		/*std::fstream test("wrapAngle.txt",std::fstream::binary | std::fstream::out);
-		for (float alpha = -2 * M_PI ; alpha < 2 * M_PI ; alpha += 0.05) {
-			std::cout << alpha << "    " << std::to_string(wrapAngle(alpha)) << std::endl;
-			test << std::to_string(alpha) << "     " << std::to_string(wrapAngle(alpha)) << std::endl;
-		}
-		test.close();
-		std::cin.get();*/
-
-
 		
 #ifndef _DEBUG
 		debugOn = false;
