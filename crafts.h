@@ -97,7 +97,7 @@ public:
 		return wrapAngle(body.rot);
 	};
 	float rudderAngle = 0.0f;
-	float maxRudder = (float)M_PI / 2.0f;
+	float maxRudder = (float)M_PI / 8.0f;
 	inline void setRudder(float angle) { if (abs(angle) <= maxRudder) rudderAngle = angle; };
 	inline float getRudder() { return rudderAngle; };
 

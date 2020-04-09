@@ -291,12 +291,12 @@ public:
 		// Rudder
 		if (simThisFrame)
 		{
-			float rudderRate = 5.0f;
-			if (GetKey(olc::Key::A).bHeld) { ship.setRudder(ship.getRudder() - rudderRate * frameTimeStep); }
-			if (GetKey(olc::Key::D).bHeld) { ship.setRudder(ship.getRudder() + rudderRate * frameTimeStep); }
-			float turnRate = 2.0f;
+			float rudderRate = 1.0f;
+			if (GetKey(olc::Key::LEFT).bHeld) { ship.setRudder(ship.getRudder() - rudderRate * frameTimeStep); }
+			if (GetKey(olc::Key::RIGHT).bHeld) { ship.setRudder(ship.getRudder() + rudderRate * frameTimeStep); }
+			/*float turnRate = 2.0f;
 			if (GetKey(olc::Key::LEFT).bHeld) { ship.body.rot += turnRate * frameTimeStep; }
-			if (GetKey(olc::Key::RIGHT).bHeld) { ship.body.rot -= turnRate * frameTimeStep; }
+			if (GetKey(olc::Key::RIGHT).bHeld) { ship.body.rot -= turnRate * frameTimeStep; }*/
 			// Sail
 			float sailRate = 1.0f;
 			if (GetKey(olc::Key::UP).bHeld) { ship.setSail(ship.getSailSlackAngle() + sailRate * frameTimeStep); }
