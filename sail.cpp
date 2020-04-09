@@ -164,7 +164,7 @@ public:
 
 	void DrawBackground() {
 		//Pixel waveTopColor(80, 80, 100);
-		float r = 0.2; float g = 0.2; float b = 0.4;
+		float r = 0.1; float g = 0.1; float b = 0.2;
 		Pixel backgroundColor(10, 10, 50);
 		Clear(backgroundColor);
 		
@@ -173,12 +173,13 @@ public:
 		vf2d BR = screenBottomRight();
 		vi2d BRi = toScreen(BR);
 		// Draw Scrolling waves
-		float wavelength = 10.0f;
-		float waveSpeed = 6.0f+ship.body.vel.x;
-		float phase = fmod(missionElapsedTime, 2 * M_PI);
+		float wavelength = 0.1;
+		float waveSpeed = 3.0f;
+		float phase = fmod(missionElapsedTime*waveSpeed/wavelength, 2 * M_PI);
 
 		for (int i = 0; i < ScreenWidth(); i++) {
-			float intensity = 1.0f*sin((i / wavelength)+phase* waveSpeed);
+			float x = toWorld(olc::vf2d(i, 0)).x;
+			float intensity = 1.0f + 1.0f*sin((x/ wavelength)+phase);
 			
 			olc::Pixel color = clampedPixel((intensity*r)* 255, (intensity*g)*255, (intensity*b)* 255);
 			
