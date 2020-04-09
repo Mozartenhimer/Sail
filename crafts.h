@@ -107,7 +107,8 @@ public:
 	olc::vf2d rudderPivot;
 	SegmentedCurve rudder;
 	SegmentedCurve rudder_w;
-	
+	Foil rudderFoil;
+
 	olc::vf2d sailPivot;
 	SegmentedCurve sail;
 	SegmentedCurve sail_w;

@@ -154,7 +154,7 @@ public:
 
 		ship.body.rotDot = 0.0f;
 		
-		ship.body.inertiaMoment = INFINITY;
+		ship.body.inertiaMoment = 1.0f;
 		//! Updates the positions of the bodies.
 
 		physicsEngine.PropgateState(0.0f);

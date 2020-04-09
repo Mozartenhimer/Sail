@@ -15,10 +15,15 @@ void Ship::init() {
 	body = ConstructBody();
 	sail = ConstructSail();
 	sailPivot = { 0.5f,0.0f};
+	
 	rudder = ConstructRudder();
 	rudderPivot = { -1.0f ,0.0f};
-	keelFoil.area = 0.1f;
+	rudderFoil.area = 0.03f;
+	rudderFoil.fluidDensity = 1000.0f;
+	
+	keelFoil.area = 0.07f;
 	keelFoil.fluidDensity = 1000.0f;
+	
 	body.mass = 10.0f;
 
 };
@@ -62,17 +67,15 @@ inline void magCheck(olc::vf2d V){
 	}
 }
 
-#undef dbg
-#define dbg(var) ;
 void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 	dbg("applyEnviromentForces");
 	olc::vf2d appearantWind = body.vel - wind;
 	Pencil::DrawDebugLine("APwind:" + std::to_string(appearantWind.x) + " Y:" + std::to_string(appearantWind.y));
 	Pencil::DrawDebugLine("Wind:" + std::to_string(wind.x) + " Y:" + std::to_string(wind.y));
-	dbg(appearantWind);
+	
 	float windSpeed = appearantWind.mag();
 	float windAngle = angle(appearantWind);
-	dbg(windAngle);
+	
 	sailAngleFromCenterline = windAngle-getHeading();	
 	dbg(sailAngleFromCenterline);
 	// clamp sail to controls
@@ -94,7 +97,7 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 
 	olc::vf2d normalSailForce = Mat2d(sailAngleFromCenterline + getHeading())*olc::vf2d(.0f, 1.0f)*sailFoil.normalForce(windSpeed, sailAOA);
 	Pencil::DrawDebugLine("SailNormalForce" + std::to_string(normalSailForce.mag()));
-	dbg(normalSailForce);
+	
 	//Pencil::AddArrow(body.pos, normalSailForce);
 	olc::vf2d axialSailForce = Mat2d(sailAngleFromCenterline + getHeading())*olc::vf2d(1.0f,0.0f)*sailFoil.axialForce(windSpeed, sailAOA);
 	
@@ -105,9 +108,9 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 	if (axialSailForce.dot(appearantWind) > 0) {
 		axialSailForce *= -1.0f;
 	};
-	Pencil::AddArrow(body.pos, axialSailForce);
-	Pencil::AddArrow(body.pos, normalSailForce);
-	Pencil::AddArrow(body.pos, -appearantWind, 0.1f, olc::Pixel(255, 0, 0));
+	Pencil::AddArrow(body.pos + Mat2d(getHeading())*sailPivot, axialSailForce);
+	Pencil::AddArrow(body.pos + Mat2d(getHeading())*sailPivot, normalSailForce);
+	Pencil::AddArrow(body.pos + Mat2d(getHeading())*sailPivot, -appearantWind, 0.1f, olc::Pixel(255, 0, 0));
 	body.applyForce_w(normalSailForce);
 	body.applyForce_w(axialSailForce);
 
@@ -128,7 +131,7 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 	if(NormDot)
 	Pencil::AddArrow(body.pos, normalKeelForce, 1.0f, olc::Pixel(200, 200, 200));
 	//Pencil::DrawDebugLine("keelAOA:" + std::to_string(keelAOA));
-	dbgLine(keelAOA);
+
 	Pencil::log(sailAOA);
 	Pencil::log(keelAOA);
 	Pencil::log(normalSailForce.mag());
@@ -139,16 +142,43 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 	Pencil::log(body.vel.y);
 	Pencil::log(AxDot);
 	Pencil::log(NormDot);
+
 	/*
 	if (body.vel.mag() < 10.0f) {
 		body.applyForce_w(olc::vr2d(1.0f, 0.0f));
 	}
 	*/
+	// Rudder
+
+	// This does not take into account added rudder current due to 
+	float rudderAngle_w = getHeading() + rudderAngle;
+	float rudderAOA = wrapAngle(rudderAngle_w - angle(current));
+	Pencil::DrawDebugLine("Rudder AOA:" + std::to_string(rudderAOA));
+	
+	olc::vf2d normalRudderForce = Mat2d(rudderAngle_w)*olc::vf2d(.0f, 1.0f)*rudderFoil.normalForce(current.mag(), rudderAOA);
+	
+	float rudderMoment = normalRudderForce.cross(rudderPivot);
+	Pencil::DrawDebugLine("Rudder Moment:" + std::to_string(rudderMoment));
+	Pencil::AddArrow(body.pos + Mat2d(getHeading())*rudderPivot, normalRudderForce);
+	
+	//`olc::vf2d axialSailForce = Mat2d(sailAngleFromCenterline + getHeading())*olc::vf2d(1.0f, 0.0f)*sailFoil.axialForce(windSpeed, sailAOA);
 
 
 
+	//// Jank sign correctness
+	//// Flip sign if drag opposes appearent wind
+	
+	//Pencil::AddArrow(body.pos, axialSailForce);
+	//Pencil::AddArrow(body.pos, normalSailForce);
+	//Pencil::AddArrow(body.pos, -appearantWind, 0.1f, olc::Pixel(255, 0, 0));
+	//body.applyForce_w(normalSailForce);
+	//body.applyForce_w(axialSailForce);
+	body.applyForce_w(normalRudderForce);
+	
+	body.applyMoment(-rudderMoment);
 
 
+	Pencil::DrawDebugLine("-------------");
 }
 
 RigidBody Ship::ConstructBody()
