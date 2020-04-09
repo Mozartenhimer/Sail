@@ -161,7 +161,10 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 	float rudderAOA = wrapAngle(rudderAngle_w - angle(rudderCurrent));
 	Pencil::DrawDebugLine("Rudder AOA:" + std::to_string(rudderAOA));
 	olc::vf2d normalRudderForce = Mat2d(rudderAngle_w)*olc::vf2d(.0f, 1.0f)*rudderFoil.normalForce(rudderCurrent.mag(), rudderAOA);
-	float rudderMoment = normalRudderForce.cross(rudderPivot);
+	float momentComponent = (Mat2d(getHeading())*olc::vf2d(0.0, 1.0f)).dot(normalRudderForce);
+	Pencil::DrawDebugLine("Rudder Moment Component:" + std::to_string(momentComponent));
+
+	float rudderMoment = -momentComponent*rudderPivot.mag();
 	
 	Pencil::DrawDebugLine("Rudder Moment:" + std::to_string(rudderMoment));
 	Pencil::DrawDebugLine("Rudder Normal Force" + std::to_string(normalRudderForce.mag()));
@@ -181,7 +184,7 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 	//body.applyForce_w(axialSailForce);
 	//body.applyForce_w(normalRudderForce);
 	
-	//body.applyMoment(-rudderMoment);
+	body.applyMoment(rudderMoment);
 	
 	// Apply rotational damping
     double dampFactor = 0.1f;
