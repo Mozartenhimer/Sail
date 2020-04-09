@@ -68,7 +68,6 @@ inline void magCheck(olc::vf2d V){
 }
 
 void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
-	dbg("applyEnviromentForces");
 	olc::vf2d appearantWind = body.vel - wind;
 	Pencil::DrawDebugLine("APwind:" + std::to_string(appearantWind.x) + " Y:" + std::to_string(appearantWind.y));
 	Pencil::DrawDebugLine("Wind:" + std::to_string(wind.x) + " Y:" + std::to_string(wind.y));
@@ -77,7 +76,6 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 	float windAngle = angle(appearantWind);
 	
 	sailAngleFromCenterline = windAngle-getHeading();	
-	dbg(sailAngleFromCenterline);
 	// clamp sail to controls
 	
 	if (sailAngleFromCenterline > sailSlackAngle){

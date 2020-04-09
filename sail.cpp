@@ -173,16 +173,15 @@ public:
 		vf2d BR = screenBottomRight();
 		vi2d BRi = toScreen(BR);
 		// Draw Scrolling waves
-		float wavelength = 0.1;
-		float waveSpeed = 3.0f;
+		float wavelength = 0.2f;
+		float waveSpeed = 1.0f;
 		float phase = fmod(missionElapsedTime*waveSpeed/wavelength, 2 * M_PI);
 
 		for (int i = 0; i < ScreenWidth(); i++) {
 			float x = toWorld(olc::vf2d(i, 0)).x;
-			float intensity = 1.0f + 1.0f*sin((x/ wavelength)+phase);
+			float intensity = 1.0f + 0.05f*sin((x/ wavelength)+phase);
 			
-			olc::Pixel color = clampedPixel((intensity*r)* 255, (intensity*g)*255, (intensity*b)* 255);
-			
+			olc::Pixel color = clampedPixel((intensity*r) * 255, (intensity*g) * 255, (intensity*b) * 255);
 			
 			//Draw(pixelCoord, color);
 			olc::vi2d lineTop(i, TLi.y);
@@ -201,7 +200,7 @@ public:
 			for (int j = 0; Y > TL.y - screenDims.y - blockSize; ) {
 				uint32_t blockID = (uint16_t)(X / blockSize) << 16 | (uint16_t)(Y / blockSize);
 				nProcGen = blockID;
-				int nStars = rndInt(1, 15);
+				int nStars = rndInt(1, 30);
 				for (int k = 0; k < nStars; k++) {
 					//int brightness = rndInt(50,200);
 					float intensity = rndFloat(0.001f, 2.0f);
@@ -248,7 +247,7 @@ public:
 		physicsEngine.addEnviroment(&env);
 
 
-		frameMaxDt = 1 / 200.0f;
+		frameMaxDt = 1 / 100.0f;
 		timeMultiplier = 1.0f;
 		screenOffset.x = ScreenWidth() / 2;
 		screenOffset.y = ScreenHeight() / 2;
@@ -292,10 +291,12 @@ public:
 		
 		olc::vf2d mousePos(toWorld(olc::vi2d(GetMouseX(), GetMouseY())));
 		olc::vi2d mouseLoopBack(toScreen(mousePos));
+		
 		DrawBackground();
 
 		DrawDebugLine(std::to_string(missionElapsedTime));
-
+		DrawDebugLine(std::to_string(frameTimeStep / fElapsedTime));
+		DrawDebugLine("aX:" + std::to_string(ship.body.acc.x) + " aY:" + std::to_string(ship.body.acc.y));
 		DrawDebugLine("pX:" + std::to_string(ship.body.pos.x) + " pY:" + std::to_string(ship.body.pos.y));
 		DrawDebugLine("vX:" + std::to_string(ship.body.vel.x) + " vY:" + std::to_string(ship.body.vel.y));
 		DrawDebugLine("aX:" + std::to_string(ship.body.acc.x) + " aY:" + std::to_string(ship.body.acc.y));
@@ -390,18 +391,21 @@ public:
 		DrawDebugLine("Heading       :" + std::to_string(ship.getHeading() * 180 / M_PI));
 		DrawDebugLine("Speed: " + std::to_string(ship.body.vel.mag()));
 		if (ship.body.pos.x < 10.0f && !postGame) {
-			DrawString(olc::vi2d(5, 460), "Use Arrow Keys to move. Race to upwind!");
+			DrawString(olc::vi2d(5, 460), "Use Arrow Keys to move. Race to upwind to the left!");
 			DrawString(olc::vi2d(5, 470), "LEFT/RIGHT: Rudder");
 			DrawString(olc::vi2d(5, 480), "UP/DOWN Let sail out/pull in sail");
 		}
-
 		
-
+		DrawString(olc::vi2d(5, 490), "Speed: " + std::to_string(ship.body.vel.mag()));
+		DrawString(olc::vi2d(150, 490), "Upwind Distance:" + std::to_string(ship.body.pos.x));
+		DrawString(olc::vi2d(460, 490), std::to_string(missionElapsedTime));
 		if (gameOver && simRunning) {
 			postGame = true;
 		}
-
-		float winThreshold = 100.0f;
+		if (postGame) {
+			
+		}
+		float winThreshold = 50.0f;
 		if ( (ship.body.pos.x >= winThreshold && simThisFrame || gameOver) && !postGame) {
 			simRunning = false;
 			gameOver = true;
