@@ -163,13 +163,32 @@ public:
 public:
 
 	void DrawBackground() {
+		Pixel waveTopColor(80, 80, 100);
 		Pixel backgroundColor(10, 10, 50);
 		Clear(backgroundColor);
-		// TODO improve performance at large areas.
+		
+		vf2d TL = screenTopLeft();
+		vi2d TLi = toScreen(TL);
+		vf2d BR = screenBottomRight();
+		vi2d BRi = toScreen(BR);
+		// Draw Scrolling waves
+		float wavelength = 10.0f;
+		float waveSpeed = 4.0f;
+		float phase = fmod(missionElapsedTime, 2 * M_PI);
+
+		for (int i = 0; i < ScreenWidth(); i++) {
+			float intensity = 0.1*sin((i / wavelength)+phase* waveSpeed);
+			olc::Pixel color(intensity*waveTopColor.r, intensity*waveTopColor.g, intensity*waveTopColor.b);
+			//Draw(pixelCoord, color);
+			olc::vi2d lineTop(i, TLi.y);
+			olc::vi2d lineBot(i, BRi.y);
+			DrawLine(lineTop,lineBot,color);
+
+		}
 		// Proceduredurally generate stars.
 		// Divide the screen up 
 		constexpr float blockSize = 9.0f;
-		vf2d TL = screenTopLeft();
+		
 		float X = floor(TL.x / blockSize)*blockSize - blockSize;
 		for (int i = 0; X < TL.x + screenDims.x + blockSize; i++) {
 			float Y = ceil(TL.y / blockSize)*blockSize + blockSize;
@@ -288,15 +307,14 @@ public:
 
 		//----- Ship Controls
 
-		// Rudder
+		
 		if (simThisFrame)
 		{
-			float rudderRate = 1.0f;
+			float rudderRate = 1.5f;
+			// Rudder
 			if (GetKey(olc::Key::LEFT).bHeld) { ship.setRudder(ship.getRudder() - rudderRate * frameTimeStep); }
 			if (GetKey(olc::Key::RIGHT).bHeld) { ship.setRudder(ship.getRudder() + rudderRate * frameTimeStep); }
-			/*float turnRate = 2.0f;
-			if (GetKey(olc::Key::LEFT).bHeld) { ship.body.rot += turnRate * frameTimeStep; }
-			if (GetKey(olc::Key::RIGHT).bHeld) { ship.body.rot -= turnRate * frameTimeStep; }*/
+			
 			// Sail
 			float sailRate = 1.0f;
 			if (GetKey(olc::Key::UP).bHeld) { ship.setSail(ship.getSailSlackAngle() + sailRate * frameTimeStep); }
@@ -331,7 +349,7 @@ public:
 			
 			// Camera crap
 
-			olc::vr2d displacement = ship.body.vel*0.1f;
+			olc::vr2d displacement = ship.body.vel*0.2f;
 			Real frameBorder = (Real)2;
 			olc::vr2d maxMovement = { -(screenDims.x / 2 - frameBorder),(screenDims.y / 2 - frameBorder) };
 			displacement = BoxClamp(displacement, maxMovement, -maxMovement);
