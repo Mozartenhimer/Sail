@@ -86,7 +86,7 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
 	}
 
 	float sailAngleWorld = getHeading() + sailAngleFromCenterline;
-	float sailAOA = sailAngleWorld - windAngle;
+	sailAOA = sailAngleWorld - windAngle;
 
 
 
@@ -239,12 +239,19 @@ SegmentedCurve Ship::ConstructSail()
 
 void Ship::updateSailShape(double missionElapsedTime) {
 
-	float wavelength = 0.2f;
-	float waveSpeed = 5.f;
-
-	for (auto & point : sail.points ) {
-		float phase = fmod(missionElapsedTime*waveSpeed, 2 * M_PI);
-		point.y = 0.1f*sin(point.x/wavelength+phase)*point.x;
+	if (abs(sailAOA) < 0.01*M_PI/ 180) {
+		float wavelength = 0.2f;
+		float waveSpeed = 5.f;
+		for (auto & point : sail.points) {
+			float phase = fmod(missionElapsedTime*waveSpeed, 2 * M_PI);
+			point.y = 0.1f*sin(point.x / wavelength + phase)*point.x;
+		}
+	}
+	else 
+	{
+		for (auto & point : sail.points) {
+			point.y = 0.0f;
+		}
 	}
 	
 }

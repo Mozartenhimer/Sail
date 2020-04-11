@@ -81,11 +81,12 @@ public:
 
 class Ship {
 public:
-	float sailSlackAngle = 0.0f;;
+	// All angles from center line
+	float sailSlackAngle = 0.0f;
 	float sailLimitAngle = (float)M_PI / 2.0f;
 	float sailAngleFromCenterline = 0.0;
 	float minSailSlackAngle = (float)180 / M_PI;
-	
+	float sailAOA;
 	inline void setSail(float angle)
 	{
 		if (angle < sailLimitAngle)
