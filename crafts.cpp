@@ -188,6 +188,7 @@ void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
     double dampFactor = 0.1f;
 	Pencil::DrawDebugLine("BodyRotDot" + std::to_string(body.rotDot));
 	body.applyMoment(-pow(body.rotDot, 2)*dampFactor);
+	
 
 	Pencil::DrawDebugLine("-------------");
 }
@@ -227,8 +228,23 @@ SegmentedCurve Ship::ConstructRudder()
 SegmentedCurve Ship::ConstructSail()
 {
 	SegmentedCurve B;
-	B.points.push_back({ 0.0f,0.0f });
-	B.points.push_back({ -0.8f, 0.0f});
+	float sailLength = 0.8f;
+	for ( int i = 0; i <= 10 ; i++){
+		float dist = (float)i / 10.0f*sailLength;
+		B.points.push_back({ -dist,0.0f });
+	}
 	return B;
 
+}
+
+void Ship::updateSailShape(double missionElapsedTime) {
+
+	float wavelength = 0.2f;
+	float waveSpeed = 5.f;
+
+	for (auto & point : sail.points ) {
+		float phase = fmod(missionElapsedTime*waveSpeed, 2 * M_PI);
+		point.y = 0.1f*sin(point.x/wavelength+phase)*point.x;
+	}
+	
 }

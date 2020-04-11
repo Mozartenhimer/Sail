@@ -11,22 +11,11 @@
  TODO:
 	Make wind persisent state of ship object.
  Wind field shown in background
-Sail, rudder and keel forces
-Sail & rudder rendering
+	Proper background waves
 Sound effects
 	- Wind
 	-Water
-	-
-Demonstrate physics working
-Game-if-fication
-	-Race?
-	-Item Collection?
-	-Chill?
-
-Wake effects
-Let peole know
-	_ Friends
-	_- Friends/Family with sailboats.
+Physics: Sail Moment
 */
 
 
@@ -174,12 +163,12 @@ public:
 		vi2d BRi = toScreen(BR);
 		// Draw Scrolling waves
 		float wavelength = 0.2f;
-		float waveSpeed = 1.0f;
+		float waveSpeed = 1.5f;
 		float phase = fmod(missionElapsedTime*waveSpeed/wavelength, 2 * M_PI);
 
 		for (int i = 0; i < ScreenWidth(); i++) {
 			float x = toWorld(olc::vf2d(i, 0)).x;
-			float intensity = 1.0f + 0.05f*sin((x/ wavelength)+phase);
+			float intensity = 1.0f + 0.03f*sin((x/ wavelength)+phase);
 			
 			olc::Pixel color = clampedPixel((intensity*r) * 255, (intensity*g) * 255, (intensity*b) * 255);
 			
@@ -353,7 +342,9 @@ public:
 			cam.updateState(camTarget, ship.body.vel, dt);
 			cameraPos = cam.pos;
 			ship.applyEnviromentForces(wind(ship.body.pos));
+			ship.updateSailShape(missionElapsedTime);
 			ship.updateState(dt);
+			
 			physicsEngine.PropgateState(dt);
 		}
 

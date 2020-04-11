@@ -21,6 +21,8 @@ public:
 	float linearRegion = (float)1.0*M_PI / 180;
 	float CaMult = 0.15f;
 	float CnMult = 1.0f;
+	float lastN = NAN;
+	float lastA = NAN;
 	inline float Cn(float aoa) {
 		// linear region 
 
@@ -46,7 +48,7 @@ public:
 
 		const float sinTerm = pow(cos(pow(x, E)), 2);
 
-			return sign*(cosTerm*sinTerm + x * draggy)*constant;
+		return sign*(cosTerm*sinTerm + x * draggy)*constant;
 	};
 	//! \brief Axial force
 	inline float Ca(float aoa)
@@ -64,12 +66,14 @@ public:
 	inline float normalForce(float fluidVel, float aoa) {
 		//! \brief returns in frame of foil.
 		const float dynPress = 0.5*fluidDensity*pow(fluidVel,2);
-		return Cn(aoa)*area*dynPress*CnMult;
+		lastN =  Cn(aoa)*area*dynPress*CnMult;
+		return lastN;
 	}
 	
 	inline float axialForce(float fluidVel, float aoa) {
 		const float dynPress = 0.5*fluidDensity*pow(fluidVel, 2);
-		return (Ca(aoa)*area*dynPress*CaMult);
+		lastA = (Ca(aoa)*area*dynPress*CaMult);
+		return lastA;
 	}
 };
 
@@ -131,4 +135,5 @@ public:
 	static RigidBody ConstructBody();
 	SegmentedCurve ConstructRudder();
 	SegmentedCurve ConstructSail();
+	void updateSailShape(double missionElapsedTime);
 };
