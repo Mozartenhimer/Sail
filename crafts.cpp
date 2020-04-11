@@ -252,7 +252,7 @@ void Ship::updateSailShape(double missionElapsedTime) {
 		// 1 or -1, depending on the sail side
 		const float sign = (!signbit(sailAngleFromCenterline))*-2.0f + 1.0f;
 		// overall scalar multiplier on sail shape equation.
-		const float c =  sign*pow(abs(sailFoil.lastN*(pow(abs(sailAngleFromCenterline),1.4f)+0.01f)*0.05f),0.3f);
+		const float c =  sign*pow(abs(sailFoil.lastN*(pow(abs(sailAngleFromCenterline),1.4f)+0.002f)*0.03f),0.3f);
 		// Latex: y = c\left(-\left(x\ - d\right) ^ { 2 }\ \ + \ a\right)
 		// d = sail midpoint
 		// a = y intercept control (d^2)
