@@ -100,7 +100,7 @@ public:
 	float nominalScreenHeight;
 	Real shockAngle;
 	Line mouseLine;
-
+	float topSpeed = 0.0f;
 	Camera cam;
 
 	float frameMaxDt; //!< The maximum simulation time that can go by between frames. Will cause a slow down if 1/fElapsedTime less  than this
@@ -127,6 +127,7 @@ public:
 	//! Reset game to as if the executable just started
 	void ResetGameState() {
 		missionElapsedTime = 0;
+		topSpeed = 0.0f;
 		gameOver = false;
 		ship = Ship();
 		
@@ -168,7 +169,7 @@ public:
 
 		for (int i = 0; i < ScreenWidth(); i++) {
 			float x = toWorld(olc::vf2d(i, 0)).x;
-			float intensity = 1.0f + 0.03f*sin((x/ wavelength)+phase);
+			float intensity = 1.0f + 0.05f*sin((x/ wavelength)+phase);
 			
 			olc::Pixel color = clampedPixel((intensity*r) * 255, (intensity*g) * 255, (intensity*b) * 255);
 			
@@ -370,14 +371,19 @@ public:
 		DrawDebugLine("Sail     Angle:" + std::to_string(ship.sailAngleFromCenterline * 180 / M_PI));
 		DrawDebugLine("Heading       :" + std::to_string(ship.getHeading() * 180 / M_PI));
 		DrawDebugLine("Speed: " + std::to_string(ship.body.vel.mag()));
+		
 		if (ship.body.pos.x < 10.0f && !postGame) {
 			DrawString(olc::vi2d(5, 460), "Use Arrow Keys to move. Race to upwind to the left!");
 			DrawString(olc::vi2d(5, 470), "LEFT/RIGHT: Rudder");
 			DrawString(olc::vi2d(5, 480), "UP/DOWN Let sail out/pull in sail");
 		}
-		
-		DrawString(olc::vi2d(5, 490), "Speed: " + std::to_string(ship.body.vel.mag()));
-		DrawString(olc::vi2d(150, 490), "Upwind Distance:" + std::to_string(ship.body.pos.x));
+		float speed = ship.body.vel.mag();
+		topSpeed = std::max(speed, topSpeed);
+		char F[100];
+		sprintf_s(F, 100, "Speed: %2.2f Top: %2.2f", speed, topSpeed);
+		DrawString(olc::vi2d(5, 490), F);
+		sprintf_s(F, 100, "Upwind Distance: %2.2f", ship.body.pos.x);
+		DrawString(olc::vi2d(200, 490), F);
 		DrawString(olc::vi2d(460, 490), std::to_string(missionElapsedTime));
 		if (gameOver && simRunning) {
 			postGame = true;

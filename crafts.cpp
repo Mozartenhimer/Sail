@@ -241,7 +241,7 @@ void Ship::updateSailShape(double missionElapsedTime) {
 
 	if (abs(sailAOA) < 0.01*M_PI/ 180) {
 		float wavelength = 0.2f;
-		float waveSpeed = 5.f;
+		float waveSpeed = sailFoil.lastA;
 		for (auto & point : sail.points) {
 			float phase = fmod(missionElapsedTime*waveSpeed, 2 * M_PI);
 			point.y = 0.1f*sin(point.x / wavelength + phase)*point.x;
