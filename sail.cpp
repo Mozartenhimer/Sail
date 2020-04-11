@@ -374,9 +374,11 @@ public:
 		DrawDebugLine("Speed: " + std::to_string(ship.body.vel.mag()));
 		
 		if (ship.body.pos.x < 10.0f && !postGame) {
-			DrawString(olc::vi2d(5, 460), "Use Arrow Keys to move. Race to upwind to the right\!");
-			DrawString(olc::vi2d(5, 470), "LEFT/RIGHT: Rudder");
-			DrawString(olc::vi2d(5, 480), "UP/DOWN Let sail out/pull in sail");
+			constexpr int H = 5;
+			DrawString(olc::vi2d(5, H + 0),  "Use Arrow Keys to move. Race to upwind to the right\!");
+			DrawString(olc::vi2d(5, H + 10), "LEFT/RIGHT: Rudder");
+			DrawString(olc::vi2d(5, H + 20), "UP/DOWN Let sail out/pull in sail");
+			DrawString(olc::vi2d(5, H + 40), "Try pulling in the sail to just after it's taut to go.");
 		}
 		float speed = ship.body.vel.mag();
 		topSpeed = std::max(speed, topSpeed);
