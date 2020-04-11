@@ -266,3 +266,18 @@ void Ship::updateSailShape(double missionElapsedTime) {
 	}
 
 }
+float Ship::rudderRateCurve(float speed) {
+	constexpr float x[2] = {3.0f,7.0f};
+	constexpr float y[2] =  {1.5f,0.35f};
+	
+	if (speed < x[0]) {
+		return y[0];
+	}
+	else if (speed < x[1]) {  // Linear Interpolate
+		return (y[0] + (speed - x[0])*(y[1] - y[0]) / (x[1]-x[0]));
+	}
+	else {
+		return y[1];
+	}
+
+}

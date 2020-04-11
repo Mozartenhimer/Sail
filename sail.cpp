@@ -226,7 +226,7 @@ public:
 		physicsEngine.addEnviroment(&env);
 
 
-		frameMaxDt = 1 / 100.0f;
+		frameMaxDt = 1 / 200.0f;
 		timeMultiplier = 1.0f;
 		screenOffset.x = ScreenWidth() / 2;
 		screenOffset.y = ScreenHeight() / 2;
@@ -296,7 +296,8 @@ public:
 		
 		if (simThisFrame)
 		{
-			float rudderRate = 1.5f;
+			float rudderRate = Ship::rudderRateCurve(ship.body.vel.mag());
+			DrawDebugLine(std::to_string(rudderRate));
 			// Rudder
 			if (GetKey(olc::Key::LEFT).bHeld) { ship.setRudder(ship.getRudder() - rudderRate * frameTimeStep); }
 			if (GetKey(olc::Key::RIGHT).bHeld) { ship.setRudder(ship.getRudder() + rudderRate * frameTimeStep); }

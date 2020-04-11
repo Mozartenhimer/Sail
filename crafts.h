@@ -138,4 +138,5 @@ public:
 	SegmentedCurve ConstructRudder();
 	SegmentedCurve ConstructSail();
 	void updateSailShape(double missionElapsedTime);
+	static float rudderRateCurve(float speed);
 };
