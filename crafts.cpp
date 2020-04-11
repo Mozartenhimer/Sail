@@ -68,7 +68,7 @@ inline void magCheck(olc::vf2d V){
 }
 
 void Ship::applyEnviromentForces(olc::vf2d wind,olc::vf2d current) {
-	olc::vf2d appearantWind = body.vel - wind;
+	appearantWind = body.vel - wind;
 	Pencil::DrawDebugLine("APwind:" + std::to_string(appearantWind.x) + " Y:" + std::to_string(appearantWind.y));
 	Pencil::DrawDebugLine("Wind:" + std::to_string(wind.x) + " Y:" + std::to_string(wind.y));
 	
@@ -238,20 +238,27 @@ SegmentedCurve Ship::ConstructSail()
 }
 
 void Ship::updateSailShape(double missionElapsedTime) {
-
+	// For when it's just flapping in the wind.
 	if (abs(sailAOA) < 0.01*M_PI/ 180) {
 		float wavelength = 0.2f;
-		float waveSpeed = sailFoil.lastA;
+		float waveSpeed = appearantWind.mag();
 		for (auto & point : sail.points) {
 			float phase = fmod(missionElapsedTime*waveSpeed, 2 * M_PI);
 			point.y = 0.1f*sin(point.x / wavelength + phase)*point.x;
 		}
 	}
-	else 
+	else // It's taught and catching wind
 	{
+		const float c =  sailFoil.lastN*0.01f;
+		const float d = 0.4f;
+		const float a = 0.16f;
 		for (auto & point : sail.points) {
-			point.y = 0.0f;
+			const float & x = -point.x;
+			point.y = c*(-pow(x-d,2)+a);
 		}
 	}
-	
+	// Latex: y = c\left(-\left(x\ - d\right) ^ { 2 }\ \ + \ a\right)
+	// d = sail midpoint
+	// a = y intercept control (d^2)
+	// c = curve intensity
 }

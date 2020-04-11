@@ -87,6 +87,7 @@ public:
 	float sailAngleFromCenterline = 0.0;
 	float minSailSlackAngle = (float)180 / M_PI;
 	float sailAOA;
+	olc::vf2d appearantWind;
 	inline void setSail(float angle)
 	{
 		if (angle < sailLimitAngle)
