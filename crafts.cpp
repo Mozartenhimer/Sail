@@ -239,7 +239,7 @@ SegmentedCurve Ship::ConstructSail()
 
 void Ship::updateSailShape(double missionElapsedTime) {
 	// For when it's just flapping in the wind.
-	if (abs(sailAOA) < 0.01*M_PI/ 180) {
+	if (abs(sailAOA) < 0.00001) {
 		float wavelength = 0.2f;
 		float waveSpeed = appearantWind.mag();
 		for (auto & point : sail.points) {
@@ -249,7 +249,14 @@ void Ship::updateSailShape(double missionElapsedTime) {
 	}
 	else // It's taught and catching wind
 	{
-		const float c =  sailFoil.lastN*0.01f;
+		// 1 or -1, depending on the sail side
+		const float sign = (!signbit(sailAngleFromCenterline))*-2.0f + 1.0f;
+		// overall scalar multiplier on sail shape equation.
+		const float c =  sign*pow(abs(sailFoil.lastN*(pow(abs(sailAngleFromCenterline),1.4f)+0.01f)*0.05f),0.3f);
+		// Latex: y = c\left(-\left(x\ - d\right) ^ { 2 }\ \ + \ a\right)
+		// d = sail midpoint
+		// a = y intercept control (d^2)
+		// c = curve intensity
 		const float d = 0.4f;
 		const float a = 0.16f;
 		for (auto & point : sail.points) {
@@ -257,8 +264,5 @@ void Ship::updateSailShape(double missionElapsedTime) {
 			point.y = c*(-pow(x-d,2)+a);
 		}
 	}
-	// Latex: y = c\left(-\left(x\ - d\right) ^ { 2 }\ \ + \ a\right)
-	// d = sail midpoint
-	// a = y intercept control (d^2)
-	// c = curve intensity
+
 }

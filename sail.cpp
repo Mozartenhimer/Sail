@@ -439,7 +439,7 @@ int main(int argc, char ** argv){
 	Lando bedStead;
 
 	if (bedStead.Construct(500, 500, 2, 2)) {
-		bedStead.setScreenHeightMeters(10.0f);
+		bedStead.setScreenHeightMeters(5.0f);
 		bedStead.Start();
 	}
 	return 0;
