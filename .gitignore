@@ -1,4 +1,5 @@
 Release/
+build/
 Debug/
 .vs
 .swp
